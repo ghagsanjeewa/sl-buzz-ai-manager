@@ -252,5 +252,41 @@
 
     render();
   </script>
+
+
+
+
+<section style="padding:20px;color:white;background:#171717;border-radius:16px;margin:16px 0;">
+  <h2>🤖 SL BUZZ AI Manager</h2>
+  <div id="chatMessages" style="white-space:pre-wrap;margin:12px 0;">ආයුබෝවන්! SL BUZZ AI Manager වෙත සාදරයෙන් පිළිගනිමු 🇱🇰</div>
+  <textarea id="chatInput" placeholder="ඔයාගේ ප්‍රශ්නය මෙතැන ලියන්න..." style="width:100%;padding:12px;box-sizing:border-box;border-radius:8px;"></textarea>
+  <button id="sendChat" style="margin-top:10px;padding:12px 18px;border:0;border-radius:8px;">Send</button>
+</section>
+
+<script>
+const workerUrl = "https://sl-buzz-ai-manager.ghewwoff.workers.dev/";
+const chatMessages = document.getElementById("chatMessages");
+const chatInput = document.getElementById("chatInput");
+document.getElementById("sendChat").addEventListener("click", async () => {
+  const message = chatInput.value.trim();
+  if (!message) return;
+  chatMessages.textContent += "\n\nඔයා: " + message + "\n\nAI: පිළිතුර ලබාගනිමින්...";
+  chatInput.value = "";
+  try {
+    const response = await fetch(workerUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message })
+    });
+    const data = await response.json();
+    chatMessages.textContent = chatMessages.textContent.replace(
+      "AI: පිළිතුර ලබාගනිමින්...",
+      "AI: " + (data.reply || data.error || "පිළිතුරක් ලැබුණේ නැහැ.")
+    );
+  } catch (error) {
+    chatMessages.textContent += "\nසම්බන්ධතාවයේ ගැටලුවක්. Worker URL එක පරීක්ෂා කරන්න.";
+  }
+});
+</script>
 </body>
                                    </html>
