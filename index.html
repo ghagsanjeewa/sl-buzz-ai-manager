@@ -1,1 +1,256 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101827">
+  <title>SL BUZZ AI Manager</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #101827;
+      color: #f8fafc;
+    }
+    header {
+      padding: 24px 18px;
+      background: #172438;
+      border-bottom: 1px solid #334155;
+    }
+    header h1 { margin: 0 0 8px; color: #38bdf8; }
+    header p { margin: 0; color: #cbd5e1; }
+    main { max-width: 800px; margin: auto; padding: 16px; }
+    .card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    h2 { margin-top: 0; font-size: 19px; }
+    label { display: block; margin: 12px 0 6px; }
+    input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #475569;
+      border-radius: 8px;
+      background: #0f172a;
+      color: white;
+      font-size: 16px;
+    }
+    button {
+      padding: 12px 16px;
+      margin-top: 12px;
+      border: 0;
+      border-radius: 9px;
+      background: #38bdf8;
+      color: #082f49;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .stat {
+      background: #0f172a;
+      border-radius: 10px;
+      padding: 14px;
+    }
+    .stat span { color: #94a3b8; font-size: 13px; }
+    .stat strong {
+      display: block;
+      margin-top: 8px;
+      font-size: 24px;
+      overflow-wrap: anywhere;
+    }
+    .muted { color: #94a3b8; font-size: 13px; }
+    progress { width: 100%; height: 18px; }
+    #message { color: #86efac; }
+    @media (max-width: 360px) {
+      .stats { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🇱🇰 SL BUZZ</h1>
+    <p>AI Manager · Analysis Dashboard</p>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>📊 Page Analysis</h2>
+      <div class="stats">
+        <div class="stat">
+          <span>Followers</span>
+          <strong id="fDisplay">0</strong>
+        </div>
+        <div class="stat">
+          <span>Latest Reel Views</span>
+          <strong id="vDisplay">0</strong>
+        </div>
+        <div class="stat">
+          <span>Likes</span>
+          <strong id="lDisplay">0</strong>
+        </div>
+        <div class="stat">
+          <span>Comments</span>
+          <strong id="cDisplay">0</strong>
+        </div>
+        <div class="stat">
+          <span>Shares</span>
+          <strong id="sDisplay">0</strong>
+        </div>
+        <div class="stat">
+          <span>Engagement Rate</span>
+          <strong id="eDisplay">0%</strong>
+        </div>
+      </div>
+      <p class="muted">දත්ත Facebook Insights එකෙන් බලා ඇතුළත් කරන්න.</p>
+    </section>
+
+    <section class="card">
+      <h2>✏️ Update Your Numbers</h2>
+      <label for="followers">Followers</label>
+      <input id="followers" type="number" min="0" value="0">
+
+      <label for="views">Latest Reel Views</label>
+      <input id="views" type="number" min="0" value="0">
+
+      <label for="likes">Likes</label>
+      <input id="likes" type="number" min="0" value="0">
+
+      <label for="comments">Comments</label>
+      <input id="comments" type="number" min="0" value="0">
+
+      <label for="shares">Shares</label>
+      <input id="shares" type="number" min="0" value="0">
+
+      <button id="saveBtn">Save Analysis</button>
+      <p id="message" role="status"></p>
+    </section>
+
+    <section class="card">
+      <h2>🎯 Goal: 500 Followers</h2>
+      <p><strong id="goalText">0 / 500</strong></p>
+      <progress id="goalBar" max="500" value="0"></progress>
+      <p id="goalAdvice">ඔයාගේ progress එක මෙතැන පෙන්වයි.</p>
+    </section>
+
+    <section class="card">
+      <h2>💡 Manager Advice</h2>
+      <p id="advice">ඔයාගේ දත්ත ඇතුළත් කර Save Analysis ඔබන්න.</p>
+      <p class="muted">මෙය මූලික දත්ත මත ලැබෙන උපදෙස් පමණයි. Views වැඩිවීම සහතික කළ නොහැක.</p>
+    </section>
+
+    <section class="card">
+      <h2>🔔 Notifications</h2>
+      <p>Browser notification එකක් පරීක්ෂා කරන්න.</p>
+      <button id="notifyBtn">Enable Notifications</button>
+      <p id="notifyMessage" class="muted"></p>
+    </section>
+
+    <p class="muted">SL BUZZ AI Manager · Version 1.0</p>
+  </main>
+
+  <script>
+    const ids = ["followers", "views", "likes", "comments", "shares"];
+
+    function number(id) {
+      return Math.max(0, Number(document.getElementById(id).value) || 0);
+    }
+
+    function render() {
+      const f = number("followers");
+      const v = number("views");
+      const l = number("likes");
+      const c = number("comments");
+      const s = number("shares");
+
+      document.getElementById("fDisplay").textContent = f.toLocaleString();
+      document.getElementById("vDisplay").textContent = v.toLocaleString();
+      document.getElementById("lDisplay").textContent = l.toLocaleString();
+      document.getElementById("cDisplay").textContent = c.toLocaleString();
+      document.getElementById("sDisplay").textContent = s.toLocaleString();
+
+      const engagement = v > 0 ? ((l + c + s) / v) * 100 : 0;
+      document.getElementById("eDisplay").textContent =
+        engagement.toFixed(1) + "%";
+
+      const goal = Math.min(f, 500);
+      document.getElementById("goalBar").value = goal;
+      document.getElementById("goalText").textContent =
+        f.toLocaleString() + " / 500";
+
+      document.getElementById("goalAdvice").textContent =
+        f >= 500 ? "🎉 Followers 500 ඉලක්කය සම්පූර්ණයි!" :
+        "තව " + (500 - f).toLocaleString() + " followers අවශ්‍යයි.";
+
+      let advice = "දත්ත ඇතුළත් කරලා analysis එක පරීක්ෂා කරන්න.";
+      if (v === 0) {
+        advice = "Latest Reel එකේ views ඇතුළත් කළාම වඩා හොඳ උපදෙස් දෙන්න පුළුවන්.";
+      } else if (engagement < 2) {
+        advice = "ආරම්භක අදහස, වීඩියෝවේ පළමු තත්පර 2 සහ caption එක වෙනස් කර පරීක්ෂා කරන්න.";
+      } else if (engagement < 5) {
+        advice = "හොඳ ආරම්භයක්! වෙනස් Reel අදහස් පරීක්ෂා කර ප්‍රතිඵල සසඳන්න.";
+      } else {
+        advice = "හොඳ engagement එකක්! මේ Reel එකේ topic එකට සමාන තවත් අදහසක් පරීක්ෂා කරන්න.";
+      }
+      document.getElementById("advice").textContent = advice;
+    }
+
+    function saveData() {
+      const data = {};
+      ids.forEach(id => data[id] = number(id));
+      try {
+        localStorage.setItem("slBuzzAnalysis", JSON.stringify(data));
+        render();
+        document.getElementById("message").textContent =
+          "✅ Analysis data saved!";
+      } catch (error) {
+        document.getElementById("message").textContent =
+          "මේ browser එකේ data save කරන්න බැරි වුණා.";
+      }
+    }
+
+    try {
+      const saved = JSON.parse(localStorage.getItem("slBuzzAnalysis") || "null");
+      if (saved) {
+        ids.forEach(id => {
+          document.getElementById(id).value = Math.max(0, Number(saved[id]) || 0);
+        });
+      }
+    } catch (error) {}
+
+    document.getElementById("saveBtn").addEventListener("click", saveData);
+
+    document.getElementById("notifyBtn").addEventListener("click", async () => {
+      const output = document.getElementById("notifyMessage");
+      if (!("Notification" in window)) {
+        output.textContent = "මේ browser එක notifications සඳහා සහාය නොදක්වයි.";
+        return;
+      }
+      try {
+        const permission = await Notification.requestPermission();
+        if (permission === "granted") {
+          new Notification("SL BUZZ AI Manager", {
+            body: "Notifications සාර්ථකව පරීක්ෂා කළා!"
+          });
+          output.textContent = "Test notification එක යැව්වා!";
+        } else {
+          output.textContent = "Browser settings වල notifications allow කරන්න.";
+        }
+      } catch (error) {
+        output.textContent = "Notification එක පරීක්ෂා කළ නොහැකි වුණා.";
+      }
+    });
+
+    render();
+  </script>
+</body>
+                                   </html>
