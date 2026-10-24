@@ -488,5 +488,202 @@
     loadData();
     render();
   </script>
+
+
+
+
+<!-- SL BUZZ: POST ANALYSIS + PREDICTOR -->
+<section id="post-tools" style="background:#172238;padding:18px;border-radius:14px;margin:20px 0;color:white;font-family:Arial,sans-serif">
+  <h2>📊 Individual Post Analysis</h2>
+  <p>ඔයාගේ එක් එක් Reel එකේ results වෙන වෙනම save කරන්න.</p>
+
+  <label>Post / Reel Name</label>
+  <input id="postName" placeholder="උදා: Galle Fort Reel" style="width:100%;padding:10px;margin:6px 0">
+
+  <label>Post Type</label>
+  <select id="postType" style="width:100%;padding:10px;margin:6px 0">
+    <option>Travel</option>
+    <option>Trending News</option>
+    <option>Cricket</option>
+    <option>Rap / Music</option>
+    <option>Entertainment</option>
+    <option>Business Promotion</option>
+    <option>Other</option>
+  </select>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+    <input id="postViews" type="number" min="0" placeholder="Views">
+    <input id="postReach" type="number" min="0" placeholder="Reach">
+    <input id="postLikes" type="number" min="0" placeholder="Likes">
+    <input id="postComments" type="number" min="0" placeholder="Comments">
+    <input id="postShares" type="number" min="0" placeholder="Shares">
+    <input id="postFollowers" type="number" min="0" placeholder="Followers gained">
+  </div>
+
+  <label>Published Date</label>
+  <input id="postDate" type="date" style="width:100%;padding:10px;margin:6px 0">
+
+  <button onclick="saveSLBuzzPost()" style="width:100%;padding:12px;background:#2563eb;color:white;border:0;border-radius:8px;margin-top:10px">
+    💾 Save Post Analysis
+  </button>
+
+  <div id="postMessage" style="margin-top:10px"></div>
+  <div id="savedPosts" style="margin-top:14px"></div>
+
+  <hr style="margin:24px 0;border-color:#334155">
+
+  <h2>🤖 Pre-Publish Post Predictor</h2>
+  <p>Post එක publish කරන්න කලින් views ගැන ඇස්තමේන්තුවක් ගන්න.</p>
+
+  <label>Post Topic</label>
+  <input id="predictTopic" placeholder="උදා: Sri Lanka Trending Update" style="width:100%;padding:10px;margin:6px 0">
+
+  <label>Post Type</label>
+  <select id="predictType" style="width:100%;padding:10px;margin:6px 0">
+    <option>Travel</option>
+    <option>Trending News</option>
+    <option>Cricket</option>
+    <option>Rap / Music</option>
+    <option>Entertainment</option>
+    <option>Business Promotion</option>
+    <option>Other</option>
+  </select>
+
+  <label>Opening Hook (පළමු තත්පර 3)</label>
+  <input id="predictHook" placeholder="උදා: මේ update එක දැනගෙන හිටියද?" style="width:100%;padding:10px;margin:6px 0">
+
+  <label>Video Length (seconds)</label>
+  <input id="predictLength" type="number" min="1" value="15" style="width:100%;padding:10px;margin:6px 0">
+
+  <button onclick="predictSLBuzzViews()" style="width:100%;padding:12px;background:#7c3aed;color:white;border:0;border-radius:8px;margin-top:10px">
+    🔮 Estimate Potential Views
+  </button>
+
+  <div id="predictionResult" style="margin-top:14px"></div>
+</section>
+
+<script>
+function getSLBuzzPosts() {
+  try {
+    return JSON.parse(localStorage.getItem("slBuzzPostsV2") || "[]");
+  } catch (e) {
+    return [];
+  }
+}
+
+function saveSLBuzzPost() {
+  const name = document.getElementById("postName").value.trim();
+  if (!name) {
+    alert("Post / Reel Name එක ඇතුළත් කරන්න.");
+    return;
+  }
+
+  const post = {
+    id: Date.now(),
+    name,
+    type: document.getElementById("postType").value,
+    views: Math.max(0, Number(document.getElementById("postViews").value) || 0),
+    reach: Math.max(0, Number(document.getElementById("postReach").value) || 0),
+    likes: Math.max(0, Number(document.getElementById("postLikes").value) || 0),
+    comments: Math.max(0, Number(document.getElementById("postComments").value) || 0),
+    shares: Math.max(0, Number(document.getElementById("postShares").value) || 0),
+    followers: Math.max(0, Number(document.getElementById("postFollowers").value) || 0),
+    date: document.getElementById("postDate").value || new Date().toISOString().slice(0,10)
+  };
+
+  const posts = getSLBuzzPosts();
+  posts.unshift(post);
+
+  try {
+    localStorage.setItem("slBuzzPostsV2", JSON.stringify(posts));
+    document.getElementById("postMessage").textContent = "✅ Post analysis එක save වුණා!";
+    renderSLBuzzPosts();
+  } catch (e) {
+    alert("Save කරන්න බැරි වුණා. Browser storage එක පරීක්ෂා කරන්න.");
+  }
+}
+
+function renderSLBuzzPosts() {
+  const posts = getSLBuzzPosts();
+  const target = document.getElementById("savedPosts");
+
+  if (!posts.length) {
+    target.innerHTML = "<p>තවම posts save කරලා නැහැ.</p>";
+    return;
+  }
+
+  target.innerHTML = "<h3>Saved Posts (" + posts.length + ")</h3>" +
+    posts.map(p => `
+      <div style="background:#0f172a;padding:12px;border-radius:10px;margin:10px 0">
+        <strong>${escapeSLBuzzText(p.name)}</strong>
+        <p>${escapeSLBuzzText(p.type)} · ${escapeSLBuzzText(p.date)}</p>
+        <p>👁️ Views: ${p.views.toLocaleString()} · ❤️ Likes: ${p.likes.toLocaleString()}</p>
+        <p>💬 Comments: ${p.comments.toLocaleString()} · 🔁 Shares: ${p.shares.toLocaleString()}</p>
+        <p>📣 Reach: ${p.reach.toLocaleString()} · Followers gained: ${p.followers.toLocaleString()}</p>
+        <button onclick="deleteSLBuzzPost(${p.id})" style="padding:7px;background:#b91c1c;color:white;border:0;border-radius:6px">Delete</button>
+      </div>
+    `).join("");
+}
+
+function escapeSLBuzzText(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"
+  }[char]));
+}
+
+function deleteSLBuzzPost(id) {
+  if (!confirm("මේ post analysis එක delete කරන්නද?")) return;
+  const posts = getSLBuzzPosts().filter(p => p.id !== id);
+  localStorage.setItem("slBuzzPostsV2", JSON.stringify(posts));
+  renderSLBuzzPosts();
+}
+
+function predictSLBuzzViews() {
+  const topic = document.getElementById("predictTopic").value.trim();
+  const hook = document.getElementById("predictHook").value.trim();
+  const length = Math.max(1, Number(document.getElementById("predictLength").value) || 15);
+  const type = document.getElementById("predictType").value;
+  const posts = getSLBuzzPosts();
+
+  if (!topic || !hook) {
+    alert("Post Topic සහ Opening Hook දෙකම ඇතුළත් කරන්න.");
+    return;
+  }
+
+  const sameType = posts.filter(p => p.type === type && p.views > 0);
+  const allViews = posts.filter(p => p.views > 0).map(p => p.views);
+
+  let baseline = 100;
+  let source = "දැනට sample data නැති නිසා සාමාන්‍ය ආරම්භක estimate එකක්.";
+
+  if (sameType.length) {
+    baseline = sameType.reduce((sum, p) => sum + p.views, 0) / sameType.length;
+    source = "ඔයා save කරපු මේ type එකේ posts " + sameType.length + "ක history එක අනුව.";
+  } else if (allViews.length) {
+    baseline = allViews.reduce((sum, v) => sum + v, 0) / allViews.length;
+    source = "ඔයාගේ සියලු saved posts වල average views අනුව.";
+  }
+
+  let factor = 1;
+  if (hook.length >= 20) factor += 0.08;
+  if (length >= 10 && length <= 30) factor += 0.08;
+  if (length > 60) factor -= 0.12;
+
+  const low = Math.max(0, Math.round(baseline * factor * 0.5));
+  const high = Math.max(low, Math.round(baseline * factor * 1.5));
+
+  document.getElementById("predictionResult").innerHTML = `
+    <div style="background:#0f172a;padding:14px;border-radius:10px">
+      <h3>📈 Estimated Views</h3>
+      <p style="font-size:24px;font-weight:bold">${low.toLocaleString()} – ${high.toLocaleString()}</p>
+      <p>${escapeSLBuzzText(source)}</p>
+      <p>Topic: ${escapeSLBuzzText(topic)}</p>
+      <p>Hook length: ${hook.length} characters · Video: ${length}s</p>
+      <p style="color:#fbbf24">⚠️ මෙය සරල ඇස්තමේන්තුවක් පමණයි. සැබෑ views සහතික නොකරයි. තවත් නිවැරදි estimate සඳහා posts කිහිපයක actual results save කරන්න.</p>
+    </div>`;
+}
+
+renderSLBuzzPosts();
+</script>
 </body>
 </html>
