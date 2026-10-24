@@ -401,6 +401,7 @@ sendButton.addEventListener("click",sendChat);
 chatInput.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendChat();}});
 $("clearChat").addEventListener("click",()=>{chatMessages.textContent="ආයුබෝවන්! 🇱🇰 SL BUZZ AI Manager වෙත සාදරයෙන් පිළිගනිමු.";chatStatus.textContent="";});
 
+
 loadPageData();
 render();
 renderPosts();
