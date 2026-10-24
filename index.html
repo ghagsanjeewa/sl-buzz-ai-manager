@@ -2,688 +2,408 @@
 <!DOCTYPE html>
 <html lang="si">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#101827">
-  <title>SL BUZZ AI Manager</title>
-
-  <style>
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #101827;
-      color: #f8fafc;
-    }
-
-    header {
-      padding: 24px 18px;
-      background: #172438;
-      border-bottom: 1px solid #334155;
-    }
-
-    header h1 { margin: 0 0 8px; color: #38bdf8; }
-    header p { margin: 0; color: #cbd5e1; }
-
-    main {
-      max-width: 800px;
-      margin: auto;
-      padding: 16px;
-    }
-
-    .card {
-      background: #1e293b;
-      border: 1px solid #334155;
-      border-radius: 14px;
-      padding: 16px;
-      margin-bottom: 16px;
-    }
-
-    h2 { margin-top: 0; font-size: 19px; }
-
-    label {
-      display: block;
-      margin: 12px 0 6px;
-    }
-
-    input, textarea {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #475569;
-      border-radius: 8px;
-      background: #0f172a;
-      color: white;
-      font-size: 16px;
-    }
-
-    button {
-      padding: 12px 16px;
-      margin-top: 12px;
-      border: 0;
-      border-radius: 9px;
-      background: #38bdf8;
-      color: #082f49;
-      font-size: 15px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    button:disabled {
-      opacity: 0.6;
-      cursor: wait;
-    }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
-    }
-
-    .stat {
-      background: #0f172a;
-      border-radius: 10px;
-      padding: 14px;
-    }
-
-    .stat span { color: #94a3b8; font-size: 13px; }
-
-    .stat strong {
-      display: block;
-      margin-top: 8px;
-      font-size: 24px;
-      overflow-wrap: anywhere;
-    }
-
-    .muted { color: #94a3b8; font-size: 13px; }
-    progress { width: 100%; height: 18px; }
-    #message { color: #86efac; }
-    #chatMessages { white-space: pre-wrap; overflow-wrap: anywhere; }
-    #chatInput { min-height: 90px; resize: vertical; }
-    .chat-actions { display: flex; gap: 8px; flex-wrap: wrap; }
-
-    @media (max-width: 360px) {
-      .stats { grid-template-columns: 1fr; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b1120">
+<title>SL BUZZ AI Manager</title>
+<style>
+:root{--bg:#0b1120;--panel:#17243a;--inner:#0e1729;--border:#293951;--text:#f1f5f9;--muted:#a9b8cc;--blue:#38bdf8;--green:#4ade80}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:radial-gradient(ellipse at top,#182b47 0,#0b1120 55%);color:var(--text);line-height:1.6}
+header{padding:25px 16px;background:#13223a;border-bottom:1px solid var(--border)}
+header h1{margin:0;color:var(--blue)}
+header p{margin:4px 0;color:var(--muted)}
+main{width:min(100% - 26px,850px);margin:auto;padding:20px 0 40px}
+.card{background:linear-gradient(145deg,#17243a,#111c2e);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:17px;box-shadow:0 8px 25px #0002}
+h2{font-size:20px;margin:0 0 12px}
+h3{font-size:17px}
+label{display:block;margin:12px 0 5px;font-size:14px}
+input,textarea,select{display:block;width:100%;min-width:0;padding:12px;border:1px solid #40516c;border-radius:10px;background:var(--inner);color:white;font:inherit;font-size:16px}
+input:focus,textarea:focus,select:focus{outline:2px solid var(--blue);border-color:transparent}
+button{border:0;border-radius:9px;padding:11px 14px;margin:8px 5px 0 0;background:var(--blue);color:#062033;font:inherit;font-weight:bold;cursor:pointer}
+button:disabled{opacity:.6}
+button.full{width:100%}
+button.secondary{background:#33445e;color:white}
+button.purple{background:#8b5cf6;color:white}
+button.green{background:#15803d;color:white}
+button.danger{background:#b91c1c;color:white}
+.muted{color:var(--muted);font-size:13px}
+.stats,.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.stat{background:var(--inner);border:1px solid var(--border);border-radius:12px;padding:13px}
+.stat span{color:var(--muted);font-size:13px}
+.stat strong{display:block;font-size:25px;overflow-wrap:anywhere}
+.post{background:var(--inner);border:1px solid var(--border);border-radius:12px;padding:14px;margin-top:12px}
+.post p{margin:5px 0;font-size:14px;overflow-wrap:anywhere}
+.post strong{overflow-wrap:anywhere}
+.result{background:#0c2632;border:1px solid #245366;padding:14px;border-radius:12px;margin-top:14px}
+#message,#postMessage{color:var(--green)}
+#chatMessages{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--inner);padding:12px;border-radius:10px;max-height:350px;overflow:auto}
+textarea{min-height:90px}
+progress{width:100%;height:18px;accent-color:var(--blue)}
+hr{border:0;border-top:1px solid var(--border);margin:24px 0}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:15px}
+@media(max-width:420px){.stats,.fields{grid-template-columns:1fr}.card{padding:14px}}
+</style>
 </head>
-
 <body>
-  <header>
-    <h1>🇱🇰 SL BUZZ</h1>
-    <p>AI Manager · Analysis Dashboard</p>
-  </header>
-
-  <main>
-    <section class="card">
-      <h2>📊 Page Analysis</h2>
-
-      <div class="stats">
-        <div class="stat">
-          <span>Followers</span>
-          <strong id="fDisplay">0</strong>
-        </div>
-        <div class="stat">
-          <span>Latest Reel Views</span>
-          <strong id="vDisplay">0</strong>
-        </div>
-        <div class="stat">
-          <span>Likes</span>
-          <strong id="lDisplay">0</strong>
-        </div>
-        <div class="stat">
-          <span>Comments</span>
-          <strong id="cDisplay">0</strong>
-        </div>
-        <div class="stat">
-          <span>Shares</span>
-          <strong id="sDisplay">0</strong>
-        </div>
-        <div class="stat">
-          <span>Engagement Rate</span>
-          <strong id="eDisplay">0%</strong>
-        </div>
-      </div>
-
-      <p class="muted">
-        Facebook Insights එකෙන් දත්ත බලා මෙහි ඇතුළත් කරන්න.
-      </p>
-    </section>
-
-    <section class="card">
-      <h2>✏️ Update Your Numbers</h2>
-
-      <label for="followers">Followers</label>
-      <input id="followers" type="number" min="0" step="1" value="0">
-
-      <label for="views">Latest Reel Views</label>
-      <input id="views" type="number" min="0" step="1" value="0">
-
-      <label for="likes">Likes</label>
-      <input id="likes" type="number" min="0" step="1" value="0">
-
-      <label for="comments">Comments</label>
-      <input id="comments" type="number" min="0" step="1" value="0">
-
-      <label for="shares">Shares</label>
-      <input id="shares" type="number" min="0" step="1" value="0">
-
-      <button id="saveBtn">Save Analysis</button>
-      <p id="message" role="status"></p>
-    </section>
-
-    <section class="card">
-      <h2>🎯 Goal: 500 Followers</h2>
-      <p><strong id="goalText">0 / 500</strong></p>
-      <progress id="goalBar" max="500" value="0"></progress>
-      <p id="goalAdvice">ඔයාගේ progress එක මෙතැන පෙන්වයි.</p>
-    </section>
-
-    <section class="card">
-      <h2>💡 Manager Advice</h2>
-      <p id="advice">ඔයාගේ දත්ත ඇතුළත් කර Save Analysis ඔබන්න.</p>
-      <p class="muted">
-        මෙය මූලික දත්ත මත ලැබෙන උපදෙස් පමණයි.
-        Views වැඩිවීම සහතික කළ නොහැක.
-      </p>
-    </section>
-
-    <section class="card">
-      <h2>🔔 Notifications</h2>
-      <p>Browser notification එකක් පරීක්ෂා කරන්න.</p>
-      <button id="notifyBtn">Enable Notifications</button>
-      <p id="notifyMessage" class="muted"></p>
-    </section>
-
-    <section class="card">
-      <h2>🤖 SL BUZZ AI Chat</h2>
-      <p class="muted">
-        Reel ideas, captions, page growth සහ saved analysis ගැන අහන්න.
-      </p>
-
-      <div id="chatMessages" aria-live="polite">
-        ආයුබෝවන්! 🇱🇰 SL BUZZ AI Manager වෙත සාදරයෙන් පිළිගනිමු.
-      </div>
-
-      <label for="chatInput">ඔයාගේ ප්‍රශ්නය</label>
-      <textarea
-        id="chatInput"
-        placeholder="උදා: මගේ followers කීයද?"
-      ></textarea>
-
-      <div class="chat-actions">
-        <button id="sendChat">Send</button>
-        <button id="clearChat" type="button">Clear Chat</button>
-      </div>
-
-      <p id="chatStatus" class="muted" role="status"></p>
-    </section>
-
-    <p class="muted">SL BUZZ AI Manager · Version 1.1</p>
-  </main>
-
-  <script>
-    const ids = ["followers", "views", "likes", "comments", "shares"];
-
-    const workerUrl =
-      "https://sl-buzz-ai-manager.ghewwoff.workers.dev/";
-
-    function number(id) {
-      const input = document.getElementById(id);
-      return Math.max(0, Number(input.value) || 0);
-    }
-
-    function getPageData() {
-      return {
-        followers: number("followers"),
-        views: number("views"),
-        likes: number("likes"),
-        comments: number("comments"),
-        shares: number("shares")
-      };
-    }
-
-    function render() {
-      const data = getPageData();
-      const { followers: f, views: v, likes: l,
-        comments: c, shares: s } = data;
-
-      document.getElementById("fDisplay").textContent =
-        f.toLocaleString();
-
-      document.getElementById("vDisplay").textContent =
-        v.toLocaleString();
-
-      document.getElementById("lDisplay").textContent =
-        l.toLocaleString();
-
-      document.getElementById("cDisplay").textContent =
-        c.toLocaleString();
-
-      document.getElementById("sDisplay").textContent =
-        s.toLocaleString();
-
-      const engagement = v > 0 ? ((l + c + s) / v) * 100 : 0;
-
-      document.getElementById("eDisplay").textContent =
-        engagement.toFixed(1) + "%";
-
-      document.getElementById("goalBar").value = Math.min(f, 500);
-
-      document.getElementById("goalText").textContent =
-        f.toLocaleString() + " / 500";
-
-      document.getElementById("goalAdvice").textContent =
-        f >= 500
-          ? "🎉 Followers 500 ඉලක්කය සම්පූර්ණයි!"
-          : "තව " + (500 - f).toLocaleString() +
-            " followers අවශ්‍යයි.";
-
-      let advice =
-        "දත්ත ඇතුළත් කරලා analysis එක පරීක්ෂා කරන්න.";
-
-      if (v === 0) {
-        advice =
-          "Latest Reel එකේ views ඇතුළත් කළාම වඩා හොඳ උපදෙස් දෙන්න පුළුවන්.";
-      } else if (engagement < 2) {
-        advice =
-          "Reel එකේ පළමු තත්පර 2, topic එක සහ caption එක වෙනස් කර පරීක්ෂා කරන්න.";
-      } else if (engagement < 5) {
-        advice =
-          "හොඳ ආරම්භයක්! වෙනස් Reel අදහස් පරීක්ෂා කර ප්‍රතිඵල සසඳන්න.";
-      } else {
-        advice =
-          "හොඳ engagement එකක්! මේ topic එකට සමාන තවත් අදහසක් පරීක්ෂා කරන්න.";
-      }
-
-      document.getElementById("advice").textContent = advice;
-    }
-
-    function saveData() {
-      const data = getPageData();
-
-      try {
-        localStorage.setItem("slBuzzAnalysis", JSON.stringify(data));
-
-        render();
-
-        document.getElementById("message").textContent =
-          "✅ Analysis data saved!";
-
-        document.getElementById("chatStatus").textContent =
-          "AI Chat එකට දැන් මේ saved data යවන්න පුළුවන්.";
-      } catch (error) {
-        document.getElementById("message").textContent =
-          "මේ browser එකේ data save කරන්න බැරි වුණා.";
-      }
-    }
-
-    function loadData() {
-      try {
-        const saved = JSON.parse(
-          localStorage.getItem("slBuzzAnalysis") || "null"
-        );
-
-        if (saved && typeof saved === "object") {
-          ids.forEach(id => {
-            if (saved[id] !== undefined) {
-              document.getElementById(id).value =
-                Math.max(0, Number(saved[id]) || 0);
-            }
-          });
-        }
-      } catch (error) {
-        console.warn("Saved analysis could not be loaded.");
-      }
-    }
-
-    document.getElementById("saveBtn").addEventListener("click", saveData);
-
-    // Keep the analysis display updated when numbers are edited.
-    ids.forEach(id => {
-      document.getElementById(id).addEventListener("input", render);
-    });
-
-    document.getElementById("notifyBtn").addEventListener(
-      "click",
-      async () => {
-        const output = document.getElementById("notifyMessage");
-
-        if (!("Notification" in window)) {
-          output.textContent =
-            "මේ browser එක notifications සඳහා සහාය නොදක්වයි.";
-          return;
-        }
-
-        try {
-          const permission = await Notification.requestPermission();
-
-          if (permission === "granted") {
-            new Notification("SL BUZZ AI Manager", {
-              body: "Test notification එක සාර්ථකයි!"
-            });
-
-            output.textContent = "Test notification එක යැව්වා!";
-          } else {
-            output.textContent =
-              "Browser settings වල notifications allow කරන්න.";
-          }
-        } catch (error) {
-          output.textContent =
-            "Notification එක පරීක්ෂා කළ නොහැකි වුණා.";
-        }
-      }
-    );
-
-    // AI Chat
-    const chatMessages = document.getElementById("chatMessages");
-    const chatInput = document.getElementById("chatInput");
-    const chatStatus = document.getElementById("chatStatus");
-    const sendButton = document.getElementById("sendChat");
-
-    function addChatLine(text) {
-      chatMessages.textContent += "\n\n" + text;
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
-
-    async function sendChat() {
-      const message = chatInput.value.trim();
-
-      if (!message) {
-        chatStatus.textContent = "මුලින් ප්‍රශ්නයක් ලියන්න.";
-        return;
-      }
-
-      let pageData;
-
-      try {
-        // Read the latest saved analysis data.
-        pageData = JSON.parse(
-          localStorage.getItem("slBuzzAnalysis") || "{}"
-        );
-      } catch (error) {
-        pageData = {};
-      }
-
-      addChatLine("ඔයා: " + message);
-      addChatLine("AI: පිළිතුර ලබාගනිමින්...");
-
-      chatInput.value = "";
-      sendButton.disabled = true;
-      chatStatus.textContent = "AI වෙතින් පිළිතුරක් බලාපොරොත්තු වෙමු...";
-
-      try {
-        const response = await fetch(workerUrl, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            message: message,
-            pageData: pageData
-          })
-        });
-
-        let data;
-
-        try {
-          data = await response.json();
-        } catch (error) {
-          throw new Error("Worker එකෙන් කියවිය හැකි පිළිතුරක් ලැබුණේ නැහැ.");
-        }
-
-        // Replace the loading message with the response.
-        const currentText = chatMessages.textContent;
-        const loadingText = "AI: පිළිතුර ලබාගනිමින්...";
-        const lastLoadingIndex = currentText.lastIndexOf(loadingText);
-
-        if (lastLoadingIndex !== -1) {
-          chatMessages.textContent =
-            currentText.slice(0, lastLoadingIndex) +
-            "AI: " +
-            (data.reply || data.error || "පිළිතුරක් ලැබුණේ නැහැ.");
-        }
-
-        if (!response.ok) {
-          chatStatus.textContent =
-            "AI request එක අසාර්ථකයි. Cloudflare Worker logs පරීක්ෂා කරන්න.";
-        } else {
-          chatStatus.textContent =
-            "Saved Page Analysis දත්ත request එක සමඟ යැව්වා.";
-        }
-      } catch (error) {
-        const currentText = chatMessages.textContent;
-        const loadingText = "AI: පිළිතුර ලබාගනිමින්...";
-        const lastLoadingIndex = currentText.lastIndexOf(loadingText);
-
-        if (lastLoadingIndex !== -1) {
-          chatMessages.textContent =
-            currentText.slice(0, lastLoadingIndex) +
-            "AI: සම්බන්ධතාවයේ ගැටලුවක්. Worker URL සහ CORS settings පරීක්ෂා කරන්න.";
-        }
-
-        chatStatus.textContent =
-          "සම්බන්ධ වීමට නොහැකි වුණා. පසුව නැවත උත්සාහ කරන්න.";
-      } finally {
-        sendButton.disabled = false;
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-      }
-    }
-
-    sendButton.addEventListener("click", sendChat);
-
-    chatInput.addEventListener("keydown", event => {
-      if (event.key === "Enter" && !event.shiftKey) {
-        event.preventDefault();
-        sendChat();
-      }
-    });
-
-    document.getElementById("clearChat").addEventListener("click", () => {
-      chatMessages.textContent =
-        "ආයුබෝවන්! 🇱🇰 SL BUZZ AI Manager වෙත සාදරයෙන් පිළිගනිමු.";
-      chatStatus.textContent = "";
-    });
-
-    loadData();
-    render();
-  </script>
-
-
-
-
-<!-- SL BUZZ: POST ANALYSIS + PREDICTOR -->
-<section id="post-tools" style="background:#172238;padding:18px;border-radius:14px;margin:20px 0;color:white;font-family:Arial,sans-serif">
-  <h2>📊 Individual Post Analysis</h2>
-  <p>ඔයාගේ එක් එක් Reel එකේ results වෙන වෙනම save කරන්න.</p>
-
-  <label>Post / Reel Name</label>
-  <input id="postName" placeholder="උදා: Galle Fort Reel" style="width:100%;padding:10px;margin:6px 0">
-
-  <label>Post Type</label>
-  <select id="postType" style="width:100%;padding:10px;margin:6px 0">
-    <option>Travel</option>
-    <option>Trending News</option>
-    <option>Cricket</option>
-    <option>Rap / Music</option>
-    <option>Entertainment</option>
-    <option>Business Promotion</option>
-    <option>Other</option>
-  </select>
-
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-    <input id="postViews" type="number" min="0" placeholder="Views">
-    <input id="postReach" type="number" min="0" placeholder="Reach">
-    <input id="postLikes" type="number" min="0" placeholder="Likes">
-    <input id="postComments" type="number" min="0" placeholder="Comments">
-    <input id="postShares" type="number" min="0" placeholder="Shares">
-    <input id="postFollowers" type="number" min="0" placeholder="Followers gained">
-  </div>
-
-  <label>Published Date</label>
-  <input id="postDate" type="date" style="width:100%;padding:10px;margin:6px 0">
-
-  <button onclick="saveSLBuzzPost()" style="width:100%;padding:12px;background:#2563eb;color:white;border:0;border-radius:8px;margin-top:10px">
-    💾 Save Post Analysis
-  </button>
-
-  <div id="postMessage" style="margin-top:10px"></div>
-  <div id="savedPosts" style="margin-top:14px"></div>
-
-  <hr style="margin:24px 0;border-color:#334155">
-
-  <h2>🤖 Pre-Publish Post Predictor</h2>
-  <p>Post එක publish කරන්න කලින් views ගැන ඇස්තමේන්තුවක් ගන්න.</p>
-
-  <label>Post Topic</label>
-  <input id="predictTopic" placeholder="උදා: Sri Lanka Trending Update" style="width:100%;padding:10px;margin:6px 0">
-
-  <label>Post Type</label>
-  <select id="predictType" style="width:100%;padding:10px;margin:6px 0">
-    <option>Travel</option>
-    <option>Trending News</option>
-    <option>Cricket</option>
-    <option>Rap / Music</option>
-    <option>Entertainment</option>
-    <option>Business Promotion</option>
-    <option>Other</option>
-  </select>
-
-  <label>Opening Hook (පළමු තත්පර 3)</label>
-  <input id="predictHook" placeholder="උදා: මේ update එක දැනගෙන හිටියද?" style="width:100%;padding:10px;margin:6px 0">
-
-  <label>Video Length (seconds)</label>
-  <input id="predictLength" type="number" min="1" value="15" style="width:100%;padding:10px;margin:6px 0">
-
-  <button onclick="predictSLBuzzViews()" style="width:100%;padding:12px;background:#7c3aed;color:white;border:0;border-radius:8px;margin-top:10px">
-    🔮 Estimate Potential Views
-  </button>
-
-  <div id="predictionResult" style="margin-top:14px"></div>
+<header>
+<h1>SL BUZZ</h1>
+<p>AI Manager · Content & Growth Dashboard</p>
+</header>
+
+<main>
+<section class="card">
+<h2>📊 Page Analysis</h2>
+<div class="stats">
+<div class="stat"><span>Followers</span><strong id="fDisplay">0</strong></div>
+<div class="stat"><span>Latest Reel Views</span><strong id="vDisplay">0</strong></div>
+<div class="stat"><span>Likes</span><strong id="lDisplay">0</strong></div>
+<div class="stat"><span>Comments</span><strong id="cDisplay">0</strong></div>
+<div class="stat"><span>Shares</span><strong id="sDisplay">0</strong></div>
+<div class="stat"><span>Engagement Rate</span><strong id="eDisplay">0%</strong></div>
+</div>
+<p class="muted">Facebook Insights දත්ත මෙහි ඇතුළත් කරන්න.</p>
 </section>
 
+<section class="card">
+<h2>✏️ Update Your Numbers</h2>
+<label for="followers">Followers</label><input id="followers" type="number" min="0" value="0">
+<label for="views">Latest Reel Views</label><input id="views" type="number" min="0" value="0">
+<label for="likes">Likes</label><input id="likes" type="number" min="0" value="0">
+<label for="comments">Comments</label><input id="comments" type="number" min="0" value="0">
+<label for="shares">Shares</label><input id="shares" type="number" min="0" value="0">
+<button id="saveBtn" class="full">💾 Save Analysis</button>
+<p id="message" role="status"></p>
+</section>
+
+<section class="card">
+<h2>🎯 Goal: 500 Followers</h2>
+<p><strong id="goalText">0 / 500</strong></p>
+<progress id="goalBar" max="500" value="0"></progress>
+<p id="goalAdvice"></p>
+</section>
+
+<section class="card">
+<h2>💡 Manager Advice</h2>
+<p id="advice">දත්ත ඇතුළත් කර Save Analysis ඔබන්න.</p>
+<p class="muted">උපදෙස් දත්ත මත පදනම් වේ. Views වැඩිවීම සහතික කළ නොහැක.</p>
+</section>
+
+<section class="card">
+<h2>🔔 Notifications</h2>
+<button id="notifyBtn">Enable Notifications</button>
+<p id="notifyMessage" class="muted"></p>
+</section>
+
+<section class="card" id="postAnalysis">
+<h2>📊 Individual Post Analysis</h2>
+<p class="muted">එක් එක් Reel එක වෙන වෙනම save කරන්න. අලුත් results එකතු කරන්නත්, පරණ දත්ත edit කරන්නත් පුළුවන්.</p>
+
+<label for="postName">Post / Reel Name</label>
+<input id="postName" placeholder="උදා: Galle Fort Reel">
+
+<label for="postType">Post Type</label>
+<select id="postType">
+<option>Travel</option><option>Trending News</option><option>Cricket</option>
+<option>Rap / Music</option><option>Entertainment</option>
+<option>Business Promotion</option><option>Other</option>
+</select>
+
+<div class="fields">
+<div><label for="postViews">Total Views</label><input id="postViews" type="number" min="0" value="0"></div>
+<div><label for="postReach">Total Reach</label><input id="postReach" type="number" min="0" value="0"></div>
+<div><label for="postLikes">Total Likes</label><input id="postLikes" type="number" min="0" value="0"></div>
+<div><label for="postComments">Total Comments</label><input id="postComments" type="number" min="0" value="0"></div>
+<div><label for="postShares">Total Shares</label><input id="postShares" type="number" min="0" value="0"></div>
+<div><label for="postFollowers">Followers Gained</label><input id="postFollowers" type="number" min="0" value="0"></div>
+</div>
+
+<label for="postDate">Published Date</label>
+<input id="postDate" type="date">
+
+<button id="savePostBtn" class="full">💾 Save New Post</button>
+<button id="cancelEditBtn" class="full secondary" hidden>Cancel Edit</button>
+<p id="postMessage" role="status"></p>
+<div id="savedPosts"></div>
+</section>
+
+<section class="card">
+<h2>🤖 Pre-Publish Post Predictor</h2>
+<label for="predictTopic">Post Topic</label>
+<input id="predictTopic" placeholder="Sri Lanka Trending Update">
+<label for="predictType">Post Type</label>
+<select id="predictType">
+<option>Travel</option><option>Trending News</option><option>Cricket</option>
+<option>Rap / Music</option><option>Entertainment</option>
+<option>Business Promotion</option><option>Other</option>
+</select>
+<label for="predictHook">Opening Hook (පළමු තත්පර 3)</label>
+<input id="predictHook" placeholder="මේ update එක දැනගෙන හිටියද?">
+<label for="predictLength">Video Length (seconds)</label>
+<input id="predictLength" type="number" min="1" max="600" value="15">
+<button id="predictBtn" class="full purple">🔮 Estimate Potential Views</button>
+<div id="predictionResult" aria-live="polite"></div>
+</section>
+
+<section class="card">
+<h2>🤖 SL BUZZ AI Chat</h2>
+<div id="chatMessages" aria-live="polite">ආයුබෝවන්! 🇱🇰 SL BUZZ AI Manager වෙත සාදරයෙන් පිළිගනිමු.</div>
+<label for="chatInput">ඔයාගේ ප්‍රශ්නය</label>
+<textarea id="chatInput" placeholder="උදා: මගේ followers කීයද?"></textarea>
+<button id="sendChat">Send</button>
+<button id="clearChat" class="secondary">Clear Chat</button>
+<p id="chatStatus" class="muted" role="status"></p>
+</section>
+</main>
+<footer>SL BUZZ AI Manager · Updated Dashboard</footer>
+
 <script>
-function getSLBuzzPosts() {
-  try {
-    return JSON.parse(localStorage.getItem("slBuzzPostsV2") || "[]");
-  } catch (e) {
-    return [];
-  }
+"use strict";
+const $ = id => document.getElementById(id);
+const ids = ["followers","views","likes","comments","shares"];
+const workerUrl = "https://sl-buzz-ai-manager.ghewwoff.workers.dev/";
+let editingPostId = null;
+
+function num(id) {
+  return Math.max(0, Math.floor(Number($(id).value) || 0));
 }
+function pageData() {
+  return Object.fromEntries(ids.map(id => [id,num(id)]));
+}
+function render() {
+  const d = pageData();
+  $("fDisplay").textContent = d.followers.toLocaleString();
+  $("vDisplay").textContent = d.views.toLocaleString();
+  $("lDisplay").textContent = d.likes.toLocaleString();
+  $("cDisplay").textContent = d.comments.toLocaleString();
+  $("sDisplay").textContent = d.shares.toLocaleString();
+  const engagement = d.views ? (d.likes+d.comments+d.shares)/d.views*100 : 0;
+  $("eDisplay").textContent = engagement.toFixed(1)+"%";
+  $("goalBar").value = Math.min(d.followers,500);
+  $("goalText").textContent = d.followers.toLocaleString()+" / 500";
+  $("goalAdvice").textContent = d.followers>=500
+    ? "🎉 Followers 500 ඉලක්කය සම්පූර්ණයි!"
+    : "තව "+(500-d.followers).toLocaleString()+" followers අවශ්‍යයි.";
+  $("advice").textContent = d.views===0
+    ? "Latest Reel එකේ views ඇතුළත් කරන්න."
+    : engagement<2
+    ? "පළමු තත්පර 2, topic එක සහ caption එක පරීක්ෂා කරන්න."
+    : engagement<5
+    ? "හොඳ ආරම්භයක්! වෙනස් Reel අදහස් පරීක්ෂා කරන්න."
+    : "හොඳ engagement එකක්! සමාන topic එකක් පරීක්ෂා කරන්න.";
+}
+function savePageData() {
+  try {
+    localStorage.setItem("slBuzzAnalysis",JSON.stringify(pageData()));
+    render();
+    $("message").textContent="✅ Analysis data saved!";
+  } catch(e) { $("message").textContent="Browser storage එකට save කරන්න බැරි වුණා."; }
+}
+function loadPageData() {
+  try {
+    const d=JSON.parse(localStorage.getItem("slBuzzAnalysis")||"null");
+    if(d) ids.forEach(id=>{if(d[id]!==undefined) $(id).value=Math.max(0,Number(d[id])||0);});
+  } catch(e) {}
+}
+$("saveBtn").addEventListener("click",savePageData);
+ids.forEach(id=>$(id).addEventListener("input",render));
 
-function saveSLBuzzPost() {
-  const name = document.getElementById("postName").value.trim();
-  if (!name) {
-    alert("Post / Reel Name එක ඇතුළත් කරන්න.");
-    return;
-  }
+$("notifyBtn").addEventListener("click",async()=>{
+  const out=$("notifyMessage");
+  if(!("Notification" in window)){out.textContent="මේ browser එක notifications සඳහා සහාය නොදක්වයි.";return;}
+  try {
+    const permission=await Notification.requestPermission();
+    if(permission==="granted"){
+      new Notification("SL BUZZ AI Manager",{body:"Test notification එක සාර්ථකයි!"});
+      out.textContent="Test notification එක යැව්වා!";
+    } else out.textContent="Browser settings වල notifications allow කරන්න.";
+  } catch(e){out.textContent="Notification පරීක්ෂා කළ නොහැකි වුණා.";}
+});
 
-  const post = {
-    id: Date.now(),
-    name,
-    type: document.getElementById("postType").value,
-    views: Math.max(0, Number(document.getElementById("postViews").value) || 0),
-    reach: Math.max(0, Number(document.getElementById("postReach").value) || 0),
-    likes: Math.max(0, Number(document.getElementById("postLikes").value) || 0),
-    comments: Math.max(0, Number(document.getElementById("postComments").value) || 0),
-    shares: Math.max(0, Number(document.getElementById("postShares").value) || 0),
-    followers: Math.max(0, Number(document.getElementById("postFollowers").value) || 0),
-    date: document.getElementById("postDate").value || new Date().toISOString().slice(0,10)
+/* Individual post data */
+function getPosts() {
+  try {
+    const p=JSON.parse(localStorage.getItem("slBuzzPostsV2")||"[]");
+    return Array.isArray(p)?p:[];
+  } catch(e){return [];}
+}
+function storePosts(posts) {
+  localStorage.setItem("slBuzzPostsV2",JSON.stringify(posts));
+}
+function postInputData() {
+  return {
+    name:$("postName").value.trim(),
+    type:$("postType").value,
+    views:num("postViews"),
+    reach:num("postReach"),
+    likes:num("postLikes"),
+    comments:num("postComments"),
+    shares:num("postShares"),
+    followers:num("postFollowers"),
+    date:$("postDate").value || new Date().toISOString().slice(0,10)
   };
-
-  const posts = getSLBuzzPosts();
-  posts.unshift(post);
-
+}
+function clearPostForm() {
+  editingPostId=null;
+  $("postName").value="";
+  ["postViews","postReach","postLikes","postComments","postShares","postFollowers"].forEach(id=>$(id).value=0);
+  $("postDate").value="";
+  $("postType").selectedIndex=0;
+  $("savePostBtn").textContent="💾 Save New Post";
+  $("cancelEditBtn").hidden=true;
+}
+function savePost() {
+  const d=postInputData();
+  if(!d.name){$("postMessage").textContent="Post / Reel Name එක ඇතුළත් කරන්න.";return;}
   try {
-    localStorage.setItem("slBuzzPostsV2", JSON.stringify(posts));
-    document.getElementById("postMessage").textContent = "✅ Post analysis එක save වුණා!";
-    renderSLBuzzPosts();
-  } catch (e) {
-    alert("Save කරන්න බැරි වුණා. Browser storage එක පරීක්ෂා කරන්න.");
-  }
+    const posts=getPosts();
+    if(editingPostId!==null) {
+      const index=posts.findIndex(p=>String(p.id)===String(editingPostId));
+      if(index===-1){$("postMessage").textContent="Post එක හමු වුණේ නැහැ.";return;}
+      posts[index]={...posts[index],...d};
+      storePosts(posts);
+      $("postMessage").textContent="✅ Post එක update කළා!";
+    } else {
+      posts.unshift({id:Date.now().toString(36)+Math.random().toString(36).slice(2,7),...d});
+      storePosts(posts);
+      $("postMessage").textContent="✅ Post analysis එක save වුණා!";
+    }
+    clearPostForm();
+    renderPosts();
+  } catch(e) {$("postMessage").textContent="Save කරන්න බැරි වුණා. Browser storage පරීක්ෂා කරන්න.";}
 }
-
-function renderSLBuzzPosts() {
-  const posts = getSLBuzzPosts();
-  const target = document.getElementById("savedPosts");
-
-  if (!posts.length) {
-    target.innerHTML = "<p>තවම posts save කරලා නැහැ.</p>";
+function editPost(id) {
+  const p=getPosts().find(p=>String(p.id)===String(id));
+  if(!p)return;
+  editingPostId=p.id;
+  $("postName").value=p.name||"";
+  $("postType").value=p.type||"Other";
+  $("postDate").value=p.date||"";
+  ["views","reach","likes","comments","shares","followers"].forEach(k=>{
+    $("post"+k[0].toUpperCase()+k.slice(1)).value=Math.max(0,Number(p[k])||0);
+  });
+  $("savePostBtn").textContent="💾 Update Post";
+  $("cancelEditBtn").hidden=false;
+  $("postMessage").textContent="දත්ත වෙනස් කර Update Post ඔබන්න.";
+  $("postAnalysis").scrollIntoView({behavior:"smooth"});
+}
+function escapeHTML(s) {
+  return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function fmt(n){return Math.max(0,Number(n)||0).toLocaleString();}
+function renderPosts() {
+  const posts=getPosts();
+  if(!posts.length){$("savedPosts").innerHTML="<p class='muted'>තවම posts save කරලා නැහැ.</p>";return;}
+  $("savedPosts").innerHTML="<h3>Saved Posts ("+posts.length+")</h3>"+posts.map(p=>`
+    <article class="post">
+      <strong>${escapeHTML(p.name)}</strong>
+      <p>${escapeHTML(p.type)} · ${escapeHTML(p.date)}</p>
+      <p>👁️ Total Views: <b>${fmt(p.views)}</b> · 📣 Reach: <b>${fmt(p.reach)}</b></p>
+      <p>❤️ Likes: <b>${fmt(p.likes)}</b> · 💬 Comments: <b>${fmt(p.comments)}</b></p>
+      <p>🔁 Shares: <b>${fmt(p.shares)}</b> · Followers gained: <b>${fmt(p.followers)}</b></p>
+      <button type="button" data-action="edit" data-id="${escapeHTML(p.id)}">✏️ Edit</button>
+      <button type="button" class="green" data-action="add" data-id="${escapeHTML(p.id)}">➕ Add Results</button>
+      <button type="button" class="danger" data-action="delete" data-id="${escapeHTML(p.id)}">🗑️ Delete</button>
+    </article>`).join("");
+}
+$("savePostBtn").addEventListener("click",savePost);
+$("cancelEditBtn").addEventListener("click",()=>{clearPostForm();$("postMessage").textContent="Edit අවලංගු කළා.";});
+$("savedPosts").addEventListener("click",event=>{
+  const b=event.target.closest("button[data-action]");
+  if(!b)return;
+  const id=b.dataset.id, action=b.dataset.action;
+  if(action==="edit"){editPost(id);return;}
+  if(action==="delete"){
+    if(!confirm("මේ post analysis එක delete කරන්නද?"))return;
+    try{storePosts(getPosts().filter(p=>String(p.id)!==String(id)));renderPosts();$("postMessage").textContent="Post එක delete කළා.";}
+    catch(e){$("postMessage").textContent="Delete කරන්න බැරි වුණා.";}
     return;
   }
+  if(action==="add") addResults(id);
+});
 
-  target.innerHTML = "<h3>Saved Posts (" + posts.length + ")</h3>" +
-    posts.map(p => `
-      <div style="background:#0f172a;padding:12px;border-radius:10px;margin:10px 0">
-        <strong>${escapeSLBuzzText(p.name)}</strong>
-        <p>${escapeSLBuzzText(p.type)} · ${escapeSLBuzzText(p.date)}</p>
-        <p>👁️ Views: ${p.views.toLocaleString()} · ❤️ Likes: ${p.likes.toLocaleString()}</p>
-        <p>💬 Comments: ${p.comments.toLocaleString()} · 🔁 Shares: ${p.shares.toLocaleString()}</p>
-        <p>📣 Reach: ${p.reach.toLocaleString()} · Followers gained: ${p.followers.toLocaleString()}</p>
-        <button onclick="deleteSLBuzzPost(${p.id})" style="padding:7px;background:#b91c1c;color:white;border:0;border-radius:6px">Delete</button>
-      </div>
-    `).join("");
-}
-
-function escapeSLBuzzText(value) {
-  return String(value ?? "").replace(/[&<>"']/g, char => ({
-    "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"
-  }[char]));
-}
-
-function deleteSLBuzzPost(id) {
-  if (!confirm("මේ post analysis එක delete කරන්නද?")) return;
-  const posts = getSLBuzzPosts().filter(p => p.id !== id);
-  localStorage.setItem("slBuzzPostsV2", JSON.stringify(posts));
-  renderSLBuzzPosts();
-}
-
-function predictSLBuzzViews() {
-  const topic = document.getElementById("predictTopic").value.trim();
-  const hook = document.getElementById("predictHook").value.trim();
-  const length = Math.max(1, Number(document.getElementById("predictLength").value) || 15);
-  const type = document.getElementById("predictType").value;
-  const posts = getSLBuzzPosts();
-
-  if (!topic || !hook) {
-    alert("Post Topic සහ Opening Hook දෙකම ඇතුළත් කරන්න.");
-    return;
+/* Add only the new numbers to the existing totals */
+function addResults(id) {
+  const posts=getPosts();
+  const index=posts.findIndex(p=>String(p.id)===String(id));
+  if(index===-1)return;
+  const p=posts[index];
+  const fields=[
+    ["views","අලුතින් ලැබුණු Views"],
+    ["reach","අලුත් Reach"],
+    ["likes","අලුත් Likes"],
+    ["comments","අලුත් Comments"],
+    ["shares","අලුත් Shares"],
+    ["followers","අලුතින් ලැබුණු Followers"]
+  ];
+  const added={};
+  for(const [key,label] of fields) {
+    const answer=prompt(label+" (එකතු කළ යුතු අලුත් ගණන)", "0");
+    if(answer===null)return;
+    if(answer.trim()===""||!Number.isFinite(Number(answer))||Number(answer)<0||!Number.isInteger(Number(answer))) {
+      alert("කරුණාකර 0 හෝ ඊට වැඩි සම්පූර්ණ සංඛ්‍යාවක් ඇතුළත් කරන්න.");
+      return;
+    }
+    added[key]=Number(answer);
   }
-
-  const sameType = posts.filter(p => p.type === type && p.views > 0);
-  const allViews = posts.filter(p => p.views > 0).map(p => p.views);
-
-  let baseline = 100;
-  let source = "දැනට sample data නැති නිසා සාමාන්‍ය ආරම්භක estimate එකක්.";
-
-  if (sameType.length) {
-    baseline = sameType.reduce((sum, p) => sum + p.views, 0) / sameType.length;
-    source = "ඔයා save කරපු මේ type එකේ posts " + sameType.length + "ක history එක අනුව.";
-  } else if (allViews.length) {
-    baseline = allViews.reduce((sum, v) => sum + v, 0) / allViews.length;
-    source = "ඔයාගේ සියලු saved posts වල average views අනුව.";
-  }
-
-  let factor = 1;
-  if (hook.length >= 20) factor += 0.08;
-  if (length >= 10 && length <= 30) factor += 0.08;
-  if (length > 60) factor -= 0.12;
-
-  const low = Math.max(0, Math.round(baseline * factor * 0.5));
-  const high = Math.max(low, Math.round(baseline * factor * 1.5));
-
-  document.getElementById("predictionResult").innerHTML = `
-    <div style="background:#0f172a;padding:14px;border-radius:10px">
-      <h3>📈 Estimated Views</h3>
-      <p style="font-size:24px;font-weight:bold">${low.toLocaleString()} – ${high.toLocaleString()}</p>
-      <p>${escapeSLBuzzText(source)}</p>
-      <p>Topic: ${escapeSLBuzzText(topic)}</p>
-      <p>Hook length: ${hook.length} characters · Video: ${length}s</p>
-      <p style="color:#fbbf24">⚠️ මෙය සරල ඇස්තමේන්තුවක් පමණයි. සැබෑ views සහතික නොකරයි. තවත් නිවැරදි estimate සඳහා posts කිහිපයක actual results save කරන්න.</p>
-    </div>`;
+  fields.forEach(([key])=>{p[key]=Math.max(0,Number(p[key])||0)+added[key];});
+  try {
+    posts[index]=p;
+    storePosts(posts);
+    renderPosts();
+    $("postMessage").textContent="✅ අලුත් results එකතු කළා. Total counts update වුණා!";
+  } catch(e){$("postMessage").textContent="Results save කරන්න බැරි වුණා.";}
 }
 
-renderSLBuzzPosts();
+/* Pre-publish views estimate */
+$("predictBtn").addEventListener("click",()=>{
+  const topic=$("predictTopic").value.trim(), hook=$("predictHook").value.trim();
+  const length=Math.max(1,Number($("predictLength").value)||15), type=$("predictType").value;
+  if(!topic||!hook){$("predictionResult").textContent="Post Topic සහ Opening Hook දෙකම ඇතුළත් කරන්න.";return;}
+  const posts=getPosts().filter(p=>Number(p.views)>0);
+  const same=posts.filter(p=>p.type===type);
+  let baseline=100,source="Saved history නැති නිසා sample estimate එකක්.";
+  if(same.length){baseline=same.reduce((s,p)=>s+Number(p.views),0)/same.length;source="මේ type එකේ "+same.length+" saved posts වල average views අනුව.";}
+  else if(posts.length){baseline=posts.reduce((s,p)=>s+Number(p.views),0)/posts.length;source="සියලු saved posts වල average views අනුව.";}
+  let factor=1;
+  if(hook.length>=20)factor+=.08;
+  if(length>=10&&length<=30)factor+=.08;
+  if(length>60)factor-=.12;
+  const low=Math.round(baseline*factor*.5), high=Math.max(low,Math.round(baseline*factor*1.5));
+  $("predictionResult").innerHTML=`<div class="result"><strong>📈 Estimated Views Range</strong><h2>${fmt(low)} – ${fmt(high)} views</h2><p>${escapeHTML(source)}</p><p class="muted">මෙය rough estimate එකක් පමණයි. සැබෑ views සහතික කළ නොහැක.</p></div>`;
+});
+
+/* AI Chat */
+const chatMessages=$("chatMessages"),chatInput=$("chatInput"),chatStatus=$("chatStatus"),sendButton=$("sendChat");
+function addChatLine(text){chatMessages.textContent+="\n\n"+text;chatMessages.scrollTop=chatMessages.scrollHeight;}
+async function sendChat(){
+  const message=chatInput.value.trim();
+  if(!message){chatStatus.textContent="මුලින් ප්‍රශ්නයක් ලියන්න.";return;}
+  let data={};
+  try{data=JSON.parse(localStorage.getItem("slBuzzAnalysis")||"{}");}catch(e){}
+  addChatLine("ඔයා: "+message);
+  addChatLine("AI: පිළිතුර ලබාගනිමින්...");
+  chatInput.value="";sendButton.disabled=true;
+  try{
+    const response=await fetch(workerUrl,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message,pageData:data})});
+    let result;
+    try{result=await response.json();}catch(e){throw new Error("Invalid response");}
+    const text=chatMessages.textContent, loading="AI: පිළිතුර ලබාගනිමින්...",i=text.lastIndexOf(loading);
+    if(i!==-1)chatMessages.textContent=text.slice(0,i)+"AI: "+(result.reply||result.error||"පිළිතුරක් ලැබුණේ නැහැ.");
+    chatStatus.textContent=response.ok?"AI reply එක ලැබුණා.":"AI request එක අසාර්ථකයි. Worker settings පරීක්ෂා කරන්න.";
+  }catch(e){
+    const text=chatMessages.textContent,loading="AI: පිළිතුර ලබාගනිමින්...",i=text.lastIndexOf(loading);
+    if(i!==-1)chatMessages.textContent=text.slice(0,i)+"AI: සම්බන්ධතාවයේ ගැටලුවක්. Worker URL සහ CORS පරීක්ෂා කරන්න.";
+    chatStatus.textContent="සම්බන්ධ වීමට නොහැකි වුණා. පසුව උත්සාහ කරන්න.";
+  }finally{sendButton.disabled=false;chatMessages.scrollTop=chatMessages.scrollHeight;}
+}
+sendButton.addEventListener("click",sendChat);
+chatInput.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendChat();}});
+$("clearChat").addEventListener("click",()=>{chatMessages.textContent="ආයුබෝවන්! 🇱🇰 SL BUZZ AI Manager වෙත සාදරයෙන් පිළිගනිමු.";chatStatus.textContent="";});
+
+loadPageData();
+render();
+renderPosts();
 </script>
 </body>
 </html>
