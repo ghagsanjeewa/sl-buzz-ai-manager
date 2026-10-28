@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="si">
 <head>
@@ -6,230 +5,549 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#0b1120">
 <title>SL BUZZ AI Manager</title>
+
 <style>
-:root{--bg:#0b1120;--panel:#17243a;--inner:#0e1729;--border:#293951;--text:#f1f5f9;--muted:#a9b8cc;--blue:#38bdf8;--green:#4ade80}
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:radial-gradient(ellipse at top,#182b47 0,#0b1120 55%);color:var(--text);line-height:1.6}
-header{padding:25px 16px;background:#13223a;border-bottom:1px solid var(--border)}
-header h1{margin:0;color:var(--blue)}
-header p{margin:4px 0;color:var(--muted)}
-main{width:min(100% - 26px,850px);margin:auto;padding:20px 0 40px}
-.card{background:linear-gradient(145deg,#17243a,#111c2e);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:17px;box-shadow:0 8px 25px #0002}
-h2{font-size:20px;margin:0 0 12px}
-h3{font-size:17px}
-label{display:block;margin:12px 0 5px;font-size:14px}
-input,textarea,select{display:block;width:100%;min-width:0;padding:12px;border:1px solid #40516c;border-radius:10px;background:var(--inner);color:white;font:inherit;font-size:16px}
-input:focus,textarea:focus,select:focus{outline:2px solid var(--blue);border-color:transparent}
-button{border:0;border-radius:9px;padding:11px 14px;margin:8px 5px 0 0;background:var(--blue);color:#062033;font:inherit;font-weight:bold;cursor:pointer}
-button:disabled{opacity:.6}
-button.full{width:100%}
-button.secondary{background:#33445e;color:white}
-button.purple{background:#8b5cf6;color:white}
-button.green{background:#15803d;color:white}
-button.danger{background:#b91c1c;color:white}
-.muted{color:var(--muted);font-size:13px}
-.stats,.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.stat{background:var(--inner);border:1px solid var(--border);border-radius:12px;padding:13px}
-.stat span{color:var(--muted);font-size:13px}
-.stat strong{display:block;font-size:25px;overflow-wrap:anywhere}
-.post{background:var(--inner);border:1px solid var(--border);border-radius:12px;padding:14px;margin-top:12px}
-.post p{margin:5px 0;font-size:14px;overflow-wrap:anywhere}
-.post strong{overflow-wrap:anywhere}
-.result{background:#0c2632;border:1px solid #245366;padding:14px;border-radius:12px;margin-top:14px}
-#message,#postMessage{color:var(--green)}
-#chatMessages{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--inner);padding:12px;border-radius:10px;max-height:350px;overflow:auto}
-textarea{min-height:90px}
-progress{width:100%;height:18px;accent-color:var(--blue)}
-hr{border:0;border-top:1px solid var(--border);margin:24px 0}
-footer{text-align:center;color:var(--muted);font-size:12px;padding:15px}
-@media(max-width:420px){.stats,.fields{grid-template-columns:1fr}.card{padding:14px}}
+:root {
+  --bg:#0b1120;
+  --panel:#17243a;
+  --inner:#0e1729;
+  --border:#293951;
+  --text:#f1f5f9;
+  --muted:#a9b8cc;
+  --blue:#38bdf8;
+  --green:#4ade80;
+  --red:#f87171;
+}
+
+* { box-sizing:border-box; }
+
+body {
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:radial-gradient(ellipse at top,#182b47 0,#0b1120 55%);
+  color:var(--text);
+  line-height:1.6;
+}
+
+header {
+  padding:25px 16px;
+  background:#13223a;
+  border-bottom:1px solid var(--border);
+}
+
+header h1 { margin:0;color:var(--blue); }
+header p { margin:4px 0;color:var(--muted); }
+
+main {
+  width:min(100% - 26px,900px);
+  margin:auto;
+  padding:20px 0 40px;
+}
+
+.card {
+  background:linear-gradient(145deg,#17243a,#111c2e);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:18px;
+  margin-bottom:17px;
+  box-shadow:0 8px 25px #0002;
+}
+
+h2 { font-size:20px;margin:0 0 12px; }
+h3 { font-size:17px; }
+
+label {
+  display:block;
+  margin:12px 0 5px;
+  font-size:14px;
+}
+
+input,textarea,select {
+  display:block;
+  width:100%;
+  min-width:0;
+  padding:12px;
+  border:1px solid #40516c;
+  border-radius:10px;
+  background:var(--inner);
+  color:white;
+  font:inherit;
+  font-size:16px;
+}
+
+input:focus,textarea:focus,select:focus {
+  outline:2px solid var(--blue);
+  border-color:transparent;
+}
+
+button {
+  border:0;
+  border-radius:9px;
+  padding:11px 14px;
+  margin:8px 5px 0 0;
+  background:var(--blue);
+  color:#062033;
+  font:inherit;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+button:disabled { opacity:.6; }
+button.full { width:100%; }
+button.secondary { background:#33445e;color:white; }
+button.purple { background:#8b5cf6;color:white; }
+button.green { background:#15803d;color:white; }
+button.danger { background:#b91c1c;color:white; }
+
+.muted { color:var(--muted);font-size:13px; }
+
+.stats,.fields {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+}
+
+.stat {
+  background:var(--inner);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:13px;
+}
+
+.stat span { color:var(--muted);font-size:13px; }
+.stat strong {
+  display:block;
+  font-size:25px;
+  overflow-wrap:anywhere;
+}
+
+.post {
+  background:var(--inner);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:14px;
+  margin-top:12px;
+}
+
+.post p {
+  margin:5px 0;
+  font-size:14px;
+  overflow-wrap:anywhere;
+}
+
+.post strong { overflow-wrap:anywhere; }
+
+.result {
+  background:#0c2632;
+  border:1px solid #245366;
+  padding:14px;
+  border-radius:12px;
+  margin-top:14px;
+}
+
+#message,#postMessage { color:var(--green); }
+
+#chatMessages {
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+  background:var(--inner);
+  padding:12px;
+  border-radius:10px;
+  max-height:350px;
+  overflow:auto;
+}
+
+textarea { min-height:90px; }
+progress { width:100%;height:18px;accent-color:var(--blue); }
+
+footer {
+  text-align:center;
+  color:var(--muted);
+  font-size:12px;
+  padding:15px;
+}
+
+/* Charts */
+.chart-list {
+  display:grid;
+  gap:14px;
+  margin-top:14px;
+}
+
+.chart-row {
+  display:grid;
+  grid-template-columns:95px minmax(0,1fr);
+  gap:10px;
+  align-items:center;
+}
+
+.chart-name {
+  font-size:13px;
+  color:var(--muted);
+  overflow-wrap:anywhere;
+}
+
+.chart-track {
+  height:22px;
+  background:#091321;
+  border:1px solid #263851;
+  border-radius:7px;
+  overflow:hidden;
+}
+
+.chart-bar {
+  height:100%;
+  min-width:0;
+  background:linear-gradient(90deg,#0284c7,#38bdf8);
+  border-radius:6px;
+  transition:width .25s;
+}
+
+.chart-value { font-size:13px;margin-top:4px; }
+.change { font-size:12px;font-weight:bold;margin-top:2px; }
+.up { color:var(--green); }
+.down { color:var(--red); }
+.neutral { color:var(--muted); }
+
+.empty {
+  border:1px dashed #40516c;
+  border-radius:10px;
+  padding:14px;
+  color:var(--muted);
+  font-size:13px;
+}
+
+.post-chart {
+  display:none;
+  background:#101d31;
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:12px;
+  margin-top:12px;
+}
+
+.post-chart.open { display:block; }
+
+@media(max-width:520px) {
+  .stats,.fields { grid-template-columns:1fr; }
+  .card { padding:14px; }
+  .chart-row { grid-template-columns:78px minmax(0,1fr); }
+}
 </style>
 </head>
+
 <body>
 <header>
-<h1>SL BUZZ</h1>
-<p>AI Manager · Content & Growth Dashboard</p>
+  <h1>SL BUZZ</h1>
+  <p>AI Manager · Content &amp; Growth Dashboard</p>
 </header>
 
 <main>
+
 <section class="card">
-<h2>📊 Page Analysis</h2>
-<div class="stats">
-<div class="stat"><span>Followers</span><strong id="fDisplay">0</strong></div>
-<div class="stat"><span>Latest Reel Views</span><strong id="vDisplay">0</strong></div>
-<div class="stat"><span>Likes</span><strong id="lDisplay">0</strong></div>
-<div class="stat"><span>Comments</span><strong id="cDisplay">0</strong></div>
-<div class="stat"><span>Shares</span><strong id="sDisplay">0</strong></div>
-<div class="stat"><span>Engagement Rate</span><strong id="eDisplay">0%</strong></div>
-</div>
-<p class="muted">Facebook Insights දත්ත මෙහි ඇතුළත් කරන්න.</p>
+  <h2>📊 Page Analysis</h2>
+  <div class="stats">
+    <div class="stat"><span>Followers</span><strong id="fDisplay">0</strong></div>
+    <div class="stat"><span>Latest Reel Views</span><strong id="vDisplay">0</strong></div>
+    <div class="stat"><span>Likes</span><strong id="lDisplay">0</strong></div>
+    <div class="stat"><span>Comments</span><strong id="cDisplay">0</strong></div>
+    <div class="stat"><span>Shares</span><strong id="sDisplay">0</strong></div>
+    <div class="stat"><span>Engagement Rate</span><strong id="eDisplay">0%</strong></div>
+  </div>
+  <p class="muted">Facebook Insights දත්ත දැනට අතින් ඇතුළත් කරන්න. Facebook සම්බන්ධතාව තවම සකස් කර නැත.</p>
 </section>
 
 <section class="card">
-<h2>✏️ Update Your Numbers</h2>
-<label for="followers">Followers</label><input id="followers" type="number" min="0" value="0">
-<label for="views">Latest Reel Views</label><input id="views" type="number" min="0" value="0">
-<label for="likes">Likes</label><input id="likes" type="number" min="0" value="0">
-<label for="comments">Comments</label><input id="comments" type="number" min="0" value="0">
-<label for="shares">Shares</label><input id="shares" type="number" min="0" value="0">
-<button id="saveBtn" class="full">💾 Save Analysis</button>
-<p id="message" role="status"></p>
+  <h2>✏️ Update Your Numbers</h2>
+  <label for="followers">Followers</label>
+  <input id="followers" type="number" min="0" value="0">
+
+  <label for="views">Latest Reel Views</label>
+  <input id="views" type="number" min="0" value="0">
+
+  <label for="likes">Likes</label>
+  <input id="likes" type="number" min="0" value="0">
+
+  <label for="comments">Comments</label>
+  <input id="comments" type="number" min="0" value="0">
+
+  <label for="shares">Shares</label>
+  <input id="shares" type="number" min="0" value="0">
+
+  <button id="saveBtn" class="full">💾 Save Analysis</button>
+  <p id="message" role="status"></p>
 </section>
 
 <section class="card">
-<h2>🎯 Goal: 500 Followers</h2>
-<p><strong id="goalText">0 / 500</strong></p>
-<progress id="goalBar" max="500" value="0"></progress>
-<p id="goalAdvice"></p>
+  <h2>🎯 Goal: 500 Followers</h2>
+  <p><strong id="goalText">0 / 500</strong></p>
+  <progress id="goalBar" max="500" value="0"></progress>
+  <p id="goalAdvice"></p>
 </section>
 
 <section class="card">
-<h2>💡 Manager Advice</h2>
-<p id="advice">දත්ත ඇතුළත් කර Save Analysis ඔබන්න.</p>
-<p class="muted">උපදෙස් දත්ත මත පදනම් වේ. Views වැඩිවීම සහතික කළ නොහැක.</p>
+  <h2>💡 Manager Advice</h2>
+  <p id="advice">දත්ත ඇතුළත් කර Save Analysis ඔබන්න.</p>
+  <p class="muted">මෙම උපදෙස් දත්ත මත පදනම් වේ. Views වැඩිවීම සහතික කළ නොහැක.</p>
 </section>
 
 <section class="card">
-<h2>🔔 Notifications</h2>
-<button id="notifyBtn">Enable Notifications</button>
-<p id="notifyMessage" class="muted"></p>
+  <h2>🔔 Notifications</h2>
+  <button id="notifyBtn">Enable Notifications</button>
+  <p id="notifyMessage" class="muted"></p>
 </section>
 
+<!-- POST GROWTH CHART -->
+<section class="card" id="postGrowth">
+  <h2>📈 Post Growth Chart</h2>
+  <p class="muted">ඔයාගේ posts අතර performance එක සංසන්දනය කරන්න.</p>
+
+  <label for="growthMetric">Select Metric</label>
+  <select id="growthMetric">
+    <option value="views">Views</option>
+    <option value="likes">Likes</option>
+    <option value="comments">Comments</option>
+    <option value="shares">Shares</option>
+  </select>
+
+  <div id="growthChart" class="chart-list" aria-live="polite"></div>
+
+  <p class="muted">
+    ප්‍රතිශත වෙනස = (අලුත් අගය − පෙර අගය) ÷ පෙර අගය × 100.
+    පෙර අගය 0 නම් ප්‍රතිශතය ගණනය කළ නොහැක.
+  </p>
+</section>
+
+<!-- INDIVIDUAL POST ANALYSIS -->
 <section class="card" id="postAnalysis">
-<h2>📊 Individual Post Analysis</h2>
-<p class="muted">එක් එක් Reel එක වෙන වෙනම save කරන්න. අලුත් results එකතු කරන්නත්, පරණ දත්ත edit කරන්නත් පුළුවන්.</p>
+  <h2>📊 Individual Post Analysis</h2>
+  <p class="muted">එක් එක් Reel එක වෙන වෙනම save කරන්න. Add Results මඟින් අලුත් results එකතු කරන්න.</p>
 
-<label for="postName">Post / Reel Name</label>
-<input id="postName" placeholder="උදා: Galle Fort Reel">
+  <label for="postName">Post / Reel Name</label>
+  <input id="postName" placeholder="උදා: Galle Fort Reel">
 
-<label for="postType">Post Type</label>
-<select id="postType">
-<option>Travel</option><option>Trending News</option><option>Cricket</option>
-<option>Rap / Music</option><option>Entertainment</option>
-<option>Business Promotion</option><option>Other</option>
-</select>
+  <label for="postType">Post Type</label>
+  <select id="postType">
+    <option>Travel</option>
+    <option>Trending News</option>
+    <option>Cricket</option>
+    <option>Rap / Music</option>
+    <option>Entertainment</option>
+    <option>Business Promotion</option>
+    <option>Other</option>
+  </select>
 
-<div class="fields">
-<div><label for="postViews">Total Views</label><input id="postViews" type="number" min="0" value="0"></div>
-<div><label for="postReach">Total Reach</label><input id="postReach" type="number" min="0" value="0"></div>
-<div><label for="postLikes">Total Likes</label><input id="postLikes" type="number" min="0" value="0"></div>
-<div><label for="postComments">Total Comments</label><input id="postComments" type="number" min="0" value="0"></div>
-<div><label for="postShares">Total Shares</label><input id="postShares" type="number" min="0" value="0"></div>
-<div><label for="postFollowers">Followers Gained</label><input id="postFollowers" type="number" min="0" value="0"></div>
-</div>
+  <div class="fields">
+    <div>
+      <label for="postViews">Total Views</label>
+      <input id="postViews" type="number" min="0" value="0">
+    </div>
+    <div>
+      <label for="postReach">Total Reach</label>
+      <input id="postReach" type="number" min="0" value="0">
+    </div>
+    <div>
+      <label for="postLikes">Total Likes</label>
+      <input id="postLikes" type="number" min="0" value="0">
+    </div>
+    <div>
+      <label for="postComments">Total Comments</label>
+      <input id="postComments" type="number" min="0" value="0">
+    </div>
+    <div>
+      <label for="postShares">Total Shares</label>
+      <input id="postShares" type="number" min="0" value="0">
+    </div>
+    <div>
+      <label for="postFollowers">Followers Gained</label>
+      <input id="postFollowers" type="number" min="0" value="0">
+    </div>
+  </div>
 
-<label for="postDate">Published Date</label>
-<input id="postDate" type="date">
+  <label for="postDate">Published Date</label>
+  <input id="postDate" type="date">
 
-<button id="savePostBtn" class="full">💾 Save New Post</button>
-<button id="cancelEditBtn" class="full secondary" hidden>Cancel Edit</button>
-<p id="postMessage" role="status"></p>
-<div id="savedPosts"></div>
+  <button id="savePostBtn" class="full">💾 Save New Post</button>
+  <button id="cancelEditBtn" class="full secondary" hidden>Cancel Edit</button>
+
+  <p id="postMessage" role="status"></p>
+  <div id="savedPosts"></div>
 </section>
 
 <section class="card">
-<h2>🤖 Pre-Publish Post Predictor</h2>
-<label for="predictTopic">Post Topic</label>
-<input id="predictTopic" placeholder="Sri Lanka Trending Update">
-<label for="predictType">Post Type</label>
-<select id="predictType">
-<option>Travel</option><option>Trending News</option><option>Cricket</option>
-<option>Rap / Music</option><option>Entertainment</option>
-<option>Business Promotion</option><option>Other</option>
-</select>
-<label for="predictHook">Opening Hook (පළමු තත්පර 3)</label>
-<input id="predictHook" placeholder="මේ update එක දැනගෙන හිටියද?">
-<label for="predictLength">Video Length (seconds)</label>
-<input id="predictLength" type="number" min="1" max="600" value="15">
-<button id="predictBtn" class="full purple">🔮 Estimate Potential Views</button>
-<div id="predictionResult" aria-live="polite"></div>
+  <h2>🤖 Pre-Publish Post Predictor</h2>
+
+  <label for="predictTopic">Post Topic</label>
+  <input id="predictTopic" placeholder="Sri Lanka Trending Update">
+
+  <label for="predictType">Post Type</label>
+  <select id="predictType">
+    <option>Travel</option>
+    <option>Trending News</option>
+    <option>Cricket</option>
+    <option>Rap / Music</option>
+    <option>Entertainment</option>
+    <option>Business Promotion</option>
+    <option>Other</option>
+  </select>
+
+  <label for="predictHook">Opening Hook (පළමු තත්පර 3)</label>
+  <input id="predictHook" placeholder="මේ update එක දැනගෙන හිටියද?">
+
+  <label for="predictLength">Video Length (seconds)</label>
+  <input id="predictLength" type="number" min="1" max="600" value="15">
+
+  <button id="predictBtn" class="full purple">🔮 Estimate Potential Views</button>
+  <div id="predictionResult" aria-live="polite"></div>
 </section>
 
 <section class="card">
-<h2>🤖 SL BUZZ AI Chat</h2>
-<div id="chatMessages" aria-live="polite">ආයුබෝවන්! 🇱🇰 SL BUZZ AI Manager වෙත සාදරයෙන් පිළිගනිමු.</div>
-<label for="chatInput">ඔයාගේ ප්‍රශ්නය</label>
-<textarea id="chatInput" placeholder="උදා: මගේ followers කීයද?"></textarea>
-<button id="sendChat">Send</button>
-<button id="clearChat" class="secondary">Clear Chat</button>
-<p id="chatStatus" class="muted" role="status"></p>
+  <h2>🤖 SL BUZZ AI Chat</h2>
+
+  <div id="chatMessages" aria-live="polite">ආයුබෝවන්! 🇱🇰 SL BUZZ AI Manager වෙත සාදරයෙන් පිළිගනිමු.</div>
+
+  <label for="chatInput">ඔයාගේ ප්‍රශ්නය</label>
+  <textarea id="chatInput" placeholder="උදා: මගේ followers කීයද?"></textarea>
+
+  <button id="sendChat">Send</button>
+  <button id="clearChat" class="secondary">Clear Chat</button>
+  <p id="chatStatus" class="muted" role="status"></p>
 </section>
+
 </main>
-<footer>SL BUZZ AI Manager · Updated Dashboard</footer>
+
+<footer>SL BUZZ AI Manager · Post Growth Charts Edition</footer>
 
 <script>
 "use strict";
+
 const $ = id => document.getElementById(id);
 const ids = ["followers","views","likes","comments","shares"];
 const workerUrl = "https://sl-buzz-ai-manager.ghewwoff.workers.dev/";
+
 let editingPostId = null;
 
 function num(id) {
-  return Math.max(0, Math.floor(Number($(id).value) || 0));
+  const n = Number($(id).value);
+  return Number.isFinite(n) ? Math.max(0, Math.floor(n || 0)) : 0;
 }
+
 function pageData() {
-  return Object.fromEntries(ids.map(id => [id,num(id)]));
+  return Object.fromEntries(ids.map(id => [id, num(id)]));
 }
+
 function render() {
   const d = pageData();
+
   $("fDisplay").textContent = d.followers.toLocaleString();
   $("vDisplay").textContent = d.views.toLocaleString();
   $("lDisplay").textContent = d.likes.toLocaleString();
   $("cDisplay").textContent = d.comments.toLocaleString();
   $("sDisplay").textContent = d.shares.toLocaleString();
-  const engagement = d.views ? (d.likes+d.comments+d.shares)/d.views*100 : 0;
-  $("eDisplay").textContent = engagement.toFixed(1)+"%";
-  $("goalBar").value = Math.min(d.followers,500);
-  $("goalText").textContent = d.followers.toLocaleString()+" / 500";
-  $("goalAdvice").textContent = d.followers>=500
+
+  const engagement = d.views
+    ? (d.likes + d.comments + d.shares) / d.views * 100
+    : 0;
+
+  $("eDisplay").textContent = engagement.toFixed(1) + "%";
+  $("goalBar").value = Math.min(d.followers, 500);
+  $("goalText").textContent = d.followers.toLocaleString() + " / 500";
+
+  $("goalAdvice").textContent = d.followers >= 500
     ? "🎉 Followers 500 ඉලක්කය සම්පූර්ණයි!"
-    : "තව "+(500-d.followers).toLocaleString()+" followers අවශ්‍යයි.";
-  $("advice").textContent = d.views===0
+    : "තව " + (500 - d.followers).toLocaleString() + " followers අවශ්‍යයි.";
+
+  $("advice").textContent = d.views === 0
     ? "Latest Reel එකේ views ඇතුළත් කරන්න."
-    : engagement<2
+    : engagement < 2
     ? "පළමු තත්පර 2, topic එක සහ caption එක පරීක්ෂා කරන්න."
-    : engagement<5
+    : engagement < 5
     ? "හොඳ ආරම්භයක්! වෙනස් Reel අදහස් පරීක්ෂා කරන්න."
     : "හොඳ engagement එකක්! සමාන topic එකක් පරීක්ෂා කරන්න.";
 }
+
 function savePageData() {
   try {
-    localStorage.setItem("slBuzzAnalysis",JSON.stringify(pageData()));
+    localStorage.setItem("slBuzzAnalysis", JSON.stringify(pageData()));
     render();
-    $("message").textContent="✅ Analysis data saved!";
-  } catch(e) { $("message").textContent="Browser storage එකට save කරන්න බැරි වුණා."; }
+    $("message").textContent = "✅ Analysis data saved!";
+  } catch (e) {
+    $("message").textContent = "Browser storage එකට save කරන්න බැරි වුණා.";
+  }
 }
+
 function loadPageData() {
   try {
-    const d=JSON.parse(localStorage.getItem("slBuzzAnalysis")||"null");
-    if(d) ids.forEach(id=>{if(d[id]!==undefined) $(id).value=Math.max(0,Number(d[id])||0);});
-  } catch(e) {}
+    const d = JSON.parse(localStorage.getItem("slBuzzAnalysis") || "null");
+    if (d) {
+      ids.forEach(id => {
+        if (d[id] !== undefined) {
+          $(id).value = Math.max(0, Number(d[id]) || 0);
+        }
+      });
+    }
+  } catch (e) {}
 }
-$("saveBtn").addEventListener("click",savePageData);
-ids.forEach(id=>$(id).addEventListener("input",render));
 
-$("notifyBtn").addEventListener("click",async()=>{
-  const out=$("notifyMessage");
-  if(!("Notification" in window)){out.textContent="මේ browser එක notifications සඳහා සහාය නොදක්වයි.";return;}
+$("saveBtn").addEventListener("click", savePageData);
+ids.forEach(id => $(id).addEventListener("input", render));
+
+/* Notifications */
+$("notifyBtn").addEventListener("click", async () => {
+  const out = $("notifyMessage");
+
+  if (!("Notification" in window)) {
+    out.textContent = "මේ browser එක notifications සඳහා සහාය නොදක්වයි.";
+    return;
+  }
+
   try {
-    const permission=await Notification.requestPermission();
-    if(permission==="granted"){
-      new Notification("SL BUZZ AI Manager",{body:"Test notification එක සාර්ථකයි!"});
-      out.textContent="Test notification එක යැව්වා!";
-    } else out.textContent="Browser settings වල notifications allow කරන්න.";
-  } catch(e){out.textContent="Notification පරීක්ෂා කළ නොහැකි වුණා.";}
+    const permission = await Notification.requestPermission();
+
+    if (permission === "granted") {
+      new Notification("SL BUZZ AI Manager", {
+        body:"Test notification එක සාර්ථකයි!"
+      });
+      out.textContent = "Test notification එක යැව්වා!";
+    } else {
+      out.textContent = "Browser settings වල notifications allow කරන්න.";
+    }
+  } catch (e) {
+    out.textContent = "Notification පරීක්ෂා කළ නොහැකි වුණා.";
+  }
 });
 
-/* Individual post data */
+/* Post storage */
 function getPosts() {
   try {
-    const p=JSON.parse(localStorage.getItem("slBuzzPostsV2")||"[]");
-    return Array.isArray(p)?p:[];
-  } catch(e){return [];}
+    const posts = JSON.parse(localStorage.getItem("slBuzzPostsV2") || "[]");
+    return Array.isArray(posts) ? posts : [];
+  } catch (e) {
+    return [];
+  }
 }
+
 function storePosts(posts) {
-  localStorage.setItem("slBuzzPostsV2",JSON.stringify(posts));
+  localStorage.setItem("slBuzzPostsV2", JSON.stringify(posts));
 }
+
+function safeNum(value) {
+  const n = Number(value);
+  return Number.isFinite(n) ? Math.max(0, Math.floor(n || 0)) : 0;
+}
+
+function snapshot(p) {
+  return {
+    date:new Date().toISOString(),
+    views:safeNum(p.views),
+    likes:safeNum(p.likes),
+    comments:safeNum(p.comments),
+    shares:safeNum(p.shares),
+    reach:safeNum(p.reach),
+    followers:safeNum(p.followers)
+  };
+}
+
 function postInputData() {
   return {
     name:$("postName").value.trim(),
@@ -243,92 +561,338 @@ function postInputData() {
     date:$("postDate").value || new Date().toISOString().slice(0,10)
   };
 }
+
 function clearPostForm() {
-  editingPostId=null;
-  $("postName").value="";
-  ["postViews","postReach","postLikes","postComments","postShares","postFollowers"].forEach(id=>$(id).value=0);
-  $("postDate").value="";
-  $("postType").selectedIndex=0;
-  $("savePostBtn").textContent="💾 Save New Post";
-  $("cancelEditBtn").hidden=true;
+  editingPostId = null;
+  $("postName").value = "";
+
+  [
+    "postViews","postReach","postLikes",
+    "postComments","postShares","postFollowers"
+  ].forEach(id => $(id).value = 0);
+
+  $("postDate").value = "";
+  $("postType").selectedIndex = 0;
+  $("savePostBtn").textContent = "💾 Save New Post";
+  $("cancelEditBtn").hidden = true;
 }
+
 function savePost() {
-  const d=postInputData();
-  if(!d.name){$("postMessage").textContent="Post / Reel Name එක ඇතුළත් කරන්න.";return;}
-  try {
-    const posts=getPosts();
-    if(editingPostId!==null) {
-      const index=posts.findIndex(p=>String(p.id)===String(editingPostId));
-      if(index===-1){$("postMessage").textContent="Post එක හමු වුණේ නැහැ.";return;}
-      posts[index]={...posts[index],...d};
-      storePosts(posts);
-      $("postMessage").textContent="✅ Post එක update කළා!";
-    } else {
-      posts.unshift({id:Date.now().toString(36)+Math.random().toString(36).slice(2,7),...d});
-      storePosts(posts);
-      $("postMessage").textContent="✅ Post analysis එක save වුණා!";
-    }
-    clearPostForm();
-    renderPosts();
-  } catch(e) {$("postMessage").textContent="Save කරන්න බැරි වුණා. Browser storage පරීක්ෂා කරන්න.";}
-}
-function editPost(id) {
-  const p=getPosts().find(p=>String(p.id)===String(id));
-  if(!p)return;
-  editingPostId=p.id;
-  $("postName").value=p.name||"";
-  $("postType").value=p.type||"Other";
-  $("postDate").value=p.date||"";
-  ["views","reach","likes","comments","shares","followers"].forEach(k=>{
-    $("post"+k[0].toUpperCase()+k.slice(1)).value=Math.max(0,Number(p[k])||0);
-  });
-  $("savePostBtn").textContent="💾 Update Post";
-  $("cancelEditBtn").hidden=false;
-  $("postMessage").textContent="දත්ත වෙනස් කර Update Post ඔබන්න.";
-  $("postAnalysis").scrollIntoView({behavior:"smooth"});
-}
-function escapeHTML(s) {
-  return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-}
-function fmt(n){return Math.max(0,Number(n)||0).toLocaleString();}
-function renderPosts() {
-  const posts=getPosts();
-  if(!posts.length){$("savedPosts").innerHTML="<p class='muted'>තවම posts save කරලා නැහැ.</p>";return;}
-  $("savedPosts").innerHTML="<h3>Saved Posts ("+posts.length+")</h3>"+posts.map(p=>`
-    <article class="post">
-      <strong>${escapeHTML(p.name)}</strong>
-      <p>${escapeHTML(p.type)} · ${escapeHTML(p.date)}</p>
-      <p>👁️ Total Views: <b>${fmt(p.views)}</b> · 📣 Reach: <b>${fmt(p.reach)}</b></p>
-      <p>❤️ Likes: <b>${fmt(p.likes)}</b> · 💬 Comments: <b>${fmt(p.comments)}</b></p>
-      <p>🔁 Shares: <b>${fmt(p.shares)}</b> · Followers gained: <b>${fmt(p.followers)}</b></p>
-      <button type="button" data-action="edit" data-id="${escapeHTML(p.id)}">✏️ Edit</button>
-      <button type="button" class="green" data-action="add" data-id="${escapeHTML(p.id)}">➕ Add Results</button>
-      <button type="button" class="danger" data-action="delete" data-id="${escapeHTML(p.id)}">🗑️ Delete</button>
-    </article>`).join("");
-}
-$("savePostBtn").addEventListener("click",savePost);
-$("cancelEditBtn").addEventListener("click",()=>{clearPostForm();$("postMessage").textContent="Edit අවලංගු කළා.";});
-$("savedPosts").addEventListener("click",event=>{
-  const b=event.target.closest("button[data-action]");
-  if(!b)return;
-  const id=b.dataset.id, action=b.dataset.action;
-  if(action==="edit"){editPost(id);return;}
-  if(action==="delete"){
-    if(!confirm("මේ post analysis එක delete කරන්නද?"))return;
-    try{storePosts(getPosts().filter(p=>String(p.id)!==String(id)));renderPosts();$("postMessage").textContent="Post එක delete කළා.";}
-    catch(e){$("postMessage").textContent="Delete කරන්න බැරි වුණා.";}
+  const d = postInputData();
+
+  if (!d.name) {
+    $("postMessage").textContent = "Post / Reel Name එක ඇතුළත් කරන්න.";
     return;
   }
-  if(action==="add") addResults(id);
+
+  try {
+    const posts = getPosts();
+
+    if (editingPostId !== null) {
+      const index = posts.findIndex(
+        p => String(p.id) === String(editingPostId)
+      );
+
+      if (index === -1) {
+        $("postMessage").textContent = "Post එක හමු වුණේ නැහැ.";
+        return;
+      }
+
+      const old = posts[index];
+      const updated = {...old, ...d};
+
+      updated.history = Array.isArray(old.history)
+        ? old.history
+        : [snapshot(old)];
+
+      updated.history.push(snapshot(updated));
+      posts[index] = updated;
+
+      storePosts(posts);
+      $("postMessage").textContent = "✅ Post එක update කළා!";
+
+    } else {
+      const newPost = {
+        id:Date.now().toString(36) + Math.random().toString(36).slice(2,7),
+        ...d
+      };
+
+      newPost.history = [snapshot(newPost)];
+      posts.unshift(newPost);
+      storePosts(posts);
+
+      $("postMessage").textContent = "✅ Post analysis එක save වුණා!";
+    }
+
+    clearPostForm();
+    renderPosts();
+    renderGrowthChart();
+
+  } catch (e) {
+    $("postMessage").textContent = "Save කරන්න බැරි වුණා. Browser storage පරීක්ෂා කරන්න.";
+  }
+}
+
+function editPost(id) {
+  const p = getPosts().find(p => String(p.id) === String(id));
+  if (!p) return;
+
+  editingPostId = p.id;
+  $("postName").value = p.name || "";
+  $("postType").value = p.type || "Other";
+  $("postDate").value = p.date || "";
+
+  ["views","reach","likes","comments","shares","followers"].forEach(k => {
+    $("post" + k[0].toUpperCase() + k.slice(1)).value = safeNum(p[k]);
+  });
+
+  $("savePostBtn").textContent = "💾 Update Post";
+  $("cancelEditBtn").hidden = false;
+  $("postMessage").textContent = "දත්ත වෙනස් කර Update Post ඔබන්න.";
+  $("postAnalysis").scrollIntoView({behavior:"smooth"});
+}
+
+function escapeHTML(s) {
+  return String(s ?? "").replace(/[&<>"']/g, c => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#39;"
+  }[c]));
+}
+
+function fmt(n) {
+  return safeNum(n).toLocaleString();
+}
+
+/* Render saved posts and per-post chart controls */
+function renderPosts() {
+  const posts = getPosts();
+
+  if (!posts.length) {
+    $("savedPosts").innerHTML =
+      "<p class='muted'>තවම posts save කරලා නැහැ.</p>";
+    return;
+  }
+
+  $("savedPosts").innerHTML =
+    "<h3>Saved Posts (" + posts.length + ")</h3>" +
+    posts.map(p => `
+      <article class="post">
+        <strong>${escapeHTML(p.name)}</strong>
+        <p>${escapeHTML(p.type)} · ${escapeHTML(p.date)}</p>
+        <p>👁️ Views: <b>${fmt(p.views)}</b> · 📣 Reach: <b>${fmt(p.reach)}</b></p>
+        <p>❤️ Likes: <b>${fmt(p.likes)}</b> · 💬 Comments: <b>${fmt(p.comments)}</b></p>
+        <p>🔁 Shares: <b>${fmt(p.shares)}</b> · Followers gained: <b>${fmt(p.followers)}</b></p>
+
+        <button type="button" data-action="chart" data-id="${escapeHTML(p.id)}">📈 Chart</button>
+        <button type="button" data-action="edit" data-id="${escapeHTML(p.id)}">✏️ Edit</button>
+        <button type="button" class="green" data-action="add" data-id="${escapeHTML(p.id)}">➕ Add Results</button>
+        <button type="button" class="danger" data-action="delete" data-id="${escapeHTML(p.id)}">🗑️ Delete</button>
+
+        <div class="post-chart" id="postChart-${escapeHTML(p.id)}">
+          <label for="metric-${escapeHTML(p.id)}">Chart Metric</label>
+          <select id="metric-${escapeHTML(p.id)}">
+            <option value="views">Views</option>
+            <option value="likes">Likes</option>
+            <option value="comments">Comments</option>
+            <option value="shares">Shares</option>
+          </select>
+          <div class="chart-list" id="postChartContent-${escapeHTML(p.id)}"></div>
+          <p class="muted">Add Results කළ පසු history එක update වේ.</p>
+        </div>
+      </article>
+    `).join("");
+
+  posts.forEach(p => {
+    const select = $("metric-" + p.id);
+    if (select) {
+      select.addEventListener("change", () => {
+        renderSinglePostChart(p.id, select.value);
+      });
+    }
+  });
+}
+
+/* Draw bars and percentage changes */
+function metricLabel(metric) {
+  return ({
+    views:"Views",
+    likes:"Likes",
+    comments:"Comments",
+    shares:"Shares"
+  })[metric] || metric;
+}
+
+function renderBarRows(container, rows, metric) {
+  if (!rows.length) {
+    container.innerHTML = "<div class='empty'>Chart දත්ත නැහැ.</div>";
+    return;
+  }
+
+  const max = Math.max(1, ...rows.map(r => safeNum(r.value)));
+
+  container.innerHTML = rows.map((r, i) => {
+    const value = safeNum(r.value);
+    const width = value === 0 ? 0 : Math.max(2, value / max * 100);
+
+    let changeText = "";
+    let changeClass = "neutral";
+
+    if (i === 0) {
+      changeText = "First saved value";
+    } else {
+      const previous = safeNum(rows[i - 1].value);
+
+      if (previous === 0) {
+        changeText = value === 0
+          ? "No change (0 → 0)"
+          : "New value (previous was 0)";
+      } else {
+        const pct = (value - previous) / previous * 100;
+
+        changeText =
+          (pct > 0 ? "▲ +" : pct < 0 ? "▼ " : "• ") +
+          pct.toFixed(1) + "% vs previous";
+
+        changeClass = pct > 0
+          ? "up"
+          : pct < 0
+          ? "down"
+          : "neutral";
+      }
+    }
+
+    return `
+      <div class="chart-row">
+        <div class="chart-name">${escapeHTML(r.label)}</div>
+        <div>
+          <div class="chart-track">
+            <div class="chart-bar" style="width:${width}%"></div>
+          </div>
+          <div class="chart-value">
+            ${escapeHTML(metricLabel(metric))}:
+            <strong>${fmt(value)}</strong>
+          </div>
+          <div class="change ${changeClass}">${escapeHTML(changeText)}</div>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+/* Main dashboard chart: compare posts by date */
+function sortedPosts() {
+  return getPosts().slice().sort((a,b) =>
+    String(a.date || "").localeCompare(String(b.date || "")) ||
+    String(a.id).localeCompare(String(b.id))
+  );
+}
+
+function renderGrowthChart() {
+  const metric = $("growthMetric").value;
+  const posts = sortedPosts();
+
+  if (!posts.length) {
+    $("growthChart").innerHTML =
+      "<div class='empty'>Chart එක පෙන්වීමට මුලින් Individual Post Analysis යටතේ posts save කරන්න.</div>";
+    return;
+  }
+
+  const rows = posts.map((p,i) => ({
+    label:(i + 1) + ". " + (p.name || "Untitled"),
+    value:p[metric]
+  }));
+
+  renderBarRows($("growthChart"), rows, metric);
+}
+
+/* Individual post history chart */
+function renderSinglePostChart(id, metric) {
+  const post = getPosts().find(p => String(p.id) === String(id));
+  const target = $("postChartContent-" + id);
+
+  if (!post || !target) return;
+
+  let history = Array.isArray(post.history)
+    ? post.history.slice()
+    : [];
+
+  if (!history.length) history = [snapshot(post)];
+
+  const rows = history.map((h,i) => ({
+    label:"Update " + (i + 1),
+    value:h[metric]
+  }));
+
+  const last = history[history.length - 1];
+
+  if (last && safeNum(last[metric]) !== safeNum(post[metric])) {
+    rows.push({label:"Current total",value:post[metric]});
+  }
+
+  renderBarRows(target, rows, metric);
+}
+
+$("growthMetric").addEventListener("change", renderGrowthChart);
+$("savePostBtn").addEventListener("click", savePost);
+
+$("cancelEditBtn").addEventListener("click", () => {
+  clearPostForm();
+  $("postMessage").textContent = "Edit අවලංගු කළා.";
 });
 
-/* Add only the new numbers to the existing totals */
+$("savedPosts").addEventListener("click", event => {
+  const b = event.target.closest("button[data-action]");
+  if (!b) return;
+
+  const id = b.dataset.id;
+  const action = b.dataset.action;
+
+  if (action === "chart") {
+    const panel = $("postChart-" + id);
+    if (!panel) return;
+
+    panel.classList.toggle("open");
+
+    if (panel.classList.contains("open")) {
+      renderSinglePostChart(id, $("metric-" + id).value);
+    }
+    return;
+  }
+
+  if (action === "edit") {
+    editPost(id);
+    return;
+  }
+
+  if (action === "delete") {
+    if (!confirm("මේ post analysis එක delete කරන්නද?")) return;
+
+    try {
+      storePosts(getPosts().filter(p => String(p.id) !== String(id)));
+      renderPosts();
+      renderGrowthChart();
+      $("postMessage").textContent = "Post එක delete කළා.";
+    } catch (e) {
+      $("postMessage").textContent = "Delete කරන්න බැරි වුණා.";
+    }
+    return;
+  }
+
+  if (action === "add") addResults(id);
+});
+
+/* Add results and save history */
 function addResults(id) {
-  const posts=getPosts();
-  const index=posts.findIndex(p=>String(p.id)===String(id));
-  if(index===-1)return;
-  const p=posts[index];
-  const fields=[
+  const posts = getPosts();
+  const index = posts.findIndex(p => String(p.id) === String(id));
+  if (index === -1) return;
+
+  const p = posts[index];
+
+  const fields = [
     ["views","අලුතින් ලැබුණු Views"],
     ["reach","අලුත් Reach"],
     ["likes","අලුත් Likes"],
@@ -336,75 +900,186 @@ function addResults(id) {
     ["shares","අලුත් Shares"],
     ["followers","අලුතින් ලැබුණු Followers"]
   ];
-  const added={};
-  for(const [key,label] of fields) {
-    const answer=prompt(label+" (එකතු කළ යුතු අලුත් ගණන)", "0");
-    if(answer===null)return;
-    if(answer.trim()===""||!Number.isFinite(Number(answer))||Number(answer)<0||!Number.isInteger(Number(answer))) {
+
+  const added = {};
+
+  for (const [key,label] of fields) {
+    const answer = prompt(label + " (අලුත් ගණන)", "0");
+
+    if (answer === null) return;
+
+    if (
+      answer.trim() === "" ||
+      !Number.isFinite(Number(answer)) ||
+      Number(answer) < 0 ||
+      !Number.isInteger(Number(answer))
+    ) {
       alert("කරුණාකර 0 හෝ ඊට වැඩි සම්පූර්ණ සංඛ්‍යාවක් ඇතුළත් කරන්න.");
       return;
     }
-    added[key]=Number(answer);
+
+    added[key] = Number(answer);
   }
-  fields.forEach(([key])=>{p[key]=Math.max(0,Number(p[key])||0)+added[key];});
+
+  const oldTotals = {...p};
+
+  fields.forEach(([key]) => {
+    p[key] = safeNum(p[key]) + added[key];
+  });
+
+  if (!Array.isArray(p.history)) {
+    p.history = [snapshot(oldTotals)];
+  }
+
+  p.history.push(snapshot(p));
+
   try {
-    posts[index]=p;
+    posts[index] = p;
     storePosts(posts);
     renderPosts();
-    $("postMessage").textContent="✅ අලුත් results එකතු කළා. Total counts update වුණා!";
-  } catch(e){$("postMessage").textContent="Results save කරන්න බැරි වුණා.";}
+    renderGrowthChart();
+
+    $("postMessage").textContent =
+      "✅ අලුත් results සහ chart history update කළා!";
+  } catch (e) {
+    $("postMessage").textContent = "Results save කරන්න බැරි වුණා.";
+  }
 }
 
 /* Pre-publish views estimate */
-$("predictBtn").addEventListener("click",()=>{
-  const topic=$("predictTopic").value.trim(), hook=$("predictHook").value.trim();
-  const length=Math.max(1,Number($("predictLength").value)||15), type=$("predictType").value;
-  if(!topic||!hook){$("predictionResult").textContent="Post Topic සහ Opening Hook දෙකම ඇතුළත් කරන්න.";return;}
-  const posts=getPosts().filter(p=>Number(p.views)>0);
-  const same=posts.filter(p=>p.type===type);
-  let baseline=100,source="Saved history නැති නිසා sample estimate එකක්.";
-  if(same.length){baseline=same.reduce((s,p)=>s+Number(p.views),0)/same.length;source="මේ type එකේ "+same.length+" saved posts වල average views අනුව.";}
-  else if(posts.length){baseline=posts.reduce((s,p)=>s+Number(p.views),0)/posts.length;source="සියලු saved posts වල average views අනුව.";}
-  let factor=1;
-  if(hook.length>=20)factor+=.08;
-  if(length>=10&&length<=30)factor+=.08;
-  if(length>60)factor-=.12;
-  const low=Math.round(baseline*factor*.5), high=Math.max(low,Math.round(baseline*factor*1.5));
-  $("predictionResult").innerHTML=`<div class="result"><strong>📈 Estimated Views Range</strong><h2>${fmt(low)} – ${fmt(high)} views</h2><p>${escapeHTML(source)}</p><p class="muted">මෙය rough estimate එකක් පමණයි. සැබෑ views සහතික කළ නොහැක.</p></div>`;
+$("predictBtn").addEventListener("click", () => {
+  const topic = $("predictTopic").value.trim();
+  const hook = $("predictHook").value.trim();
+  const length = Math.max(1, Number($("predictLength").value) || 15);
+  const type = $("predictType").value;
+
+  if (!topic || !hook) {
+    $("predictionResult").textContent =
+      "Post Topic සහ Opening Hook දෙකම ඇතුළත් කරන්න.";
+    return;
+  }
+
+  const posts = getPosts().filter(p => Number(p.views) > 0);
+  const same = posts.filter(p => p.type === type);
+
+  let baseline = 100;
+  let source = "Saved history නැති නිසා sample estimate එකක්.";
+
+  if (same.length) {
+    baseline = same.reduce((s,p) => s + Number(p.views), 0) / same.length;
+    source = "මේ type එකේ " + same.length + " saved posts වල average views අනුව.";
+  } else if (posts.length) {
+    baseline = posts.reduce((s,p) => s + Number(p.views), 0) / posts.length;
+    source = "සියලු saved posts වල average views අනුව.";
+  }
+
+  let factor = 1;
+
+  if (hook.length >= 20) factor += .08;
+  if (length >= 10 && length <= 30) factor += .08;
+  if (length > 60) factor -= .12;
+
+  const low = Math.round(baseline * factor * .5);
+  const high = Math.max(low, Math.round(baseline * factor * 1.5));
+
+  $("predictionResult").innerHTML = `
+    <div class="result">
+      <strong>📈 Estimated Views Range</strong>
+      <h2>${fmt(low)} – ${fmt(high)} views</h2>
+      <p>${escapeHTML(source)}</p>
+      <p class="muted">මෙය rough estimate එකක් පමණයි. සැබෑ views සහතික කළ නොහැක.</p>
+    </div>
+  `;
 });
 
 /* AI Chat */
-const chatMessages=$("chatMessages"),chatInput=$("chatInput"),chatStatus=$("chatStatus"),sendButton=$("sendChat");
-function addChatLine(text){chatMessages.textContent+="\n\n"+text;chatMessages.scrollTop=chatMessages.scrollHeight;}
-async function sendChat(){
-  const message=chatInput.value.trim();
-  if(!message){chatStatus.textContent="මුලින් ප්‍රශ්නයක් ලියන්න.";return;}
-  let data={};
-  try{data=JSON.parse(localStorage.getItem("slBuzzAnalysis")||"{}");}catch(e){}
-  addChatLine("ඔයා: "+message);
-  addChatLine("AI: පිළිතුර ලබාගනිමින්...");
-  chatInput.value="";sendButton.disabled=true;
-  try{
-    const response=await fetch(workerUrl,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message,pageData:data})});
-    let result;
-    try{result=await response.json();}catch(e){throw new Error("Invalid response");}
-    const text=chatMessages.textContent, loading="AI: පිළිතුර ලබාගනිමින්...",i=text.lastIndexOf(loading);
-    if(i!==-1)chatMessages.textContent=text.slice(0,i)+"AI: "+(result.reply||result.error||"පිළිතුරක් ලැබුණේ නැහැ.");
-    chatStatus.textContent=response.ok?"AI reply එක ලැබුණා.":"AI request එක අසාර්ථකයි. Worker settings පරීක්ෂා කරන්න.";
-  }catch(e){
-    const text=chatMessages.textContent,loading="AI: පිළිතුර ලබාගනිමින්...",i=text.lastIndexOf(loading);
-    if(i!==-1)chatMessages.textContent=text.slice(0,i)+"AI: සම්බන්ධතාවයේ ගැටලුවක්. Worker URL සහ CORS පරීක්ෂා කරන්න.";
-    chatStatus.textContent="සම්බන්ධ වීමට නොහැකි වුණා. පසුව උත්සාහ කරන්න.";
-  }finally{sendButton.disabled=false;chatMessages.scrollTop=chatMessages.scrollHeight;}
+const chatMessages = $("chatMessages");
+const chatInput = $("chatInput");
+const chatStatus = $("chatStatus");
+const sendButton = $("sendChat");
+
+async function sendChat() {
+  const message = chatInput.value.trim();
+
+  if (!message) {
+    chatStatus.textContent = "මුලින් ප්‍රශ්නයක් ලියන්න.";
+    return;
+  }
+
+  let data = {};
+
+  try {
+    data = JSON.parse(localStorage.getItem("slBuzzAnalysis") || "{}");
+  } catch (e) {}
+
+  chatMessages.textContent += "\n\nඔයා: " + message;
+  chatMessages.textContent += "\n\nAI: පිළිතුර ලබාගනිමින්...";
+  chatInput.value = "";
+  sendButton.disabled = true;
+
+  try {
+    const response = await fetch(workerUrl, {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({message,pageData:data})
+    });
+
+    const result = await response.json();
+
+    const text = chatMessages.textContent;
+    const loading = "AI: පිළිතුර ලබාගනිමින්...";
+    const i = text.lastIndexOf(loading);
+
+    if (i !== -1) {
+      chatMessages.textContent =
+        text.slice(0,i) +
+        "AI: " +
+        (result.reply || result.error || "පිළිතුරක් ලැබුණේ නැහැ.");
+    }
+
+    chatStatus.textContent = response.ok
+      ? "AI reply එක ලැබුණා."
+      : "AI request එක අසාර්ථකයි. Worker settings පරීක්ෂා කරන්න.";
+
+  } catch (e) {
+    const text = chatMessages.textContent;
+    const loading = "AI: පිළිතුර ලබාගනිමින්...";
+    const i = text.lastIndexOf(loading);
+
+    if (i !== -1) {
+      chatMessages.textContent =
+        text.slice(0,i) +
+        "AI: සම්බන්ධතාවයේ ගැටලුවක්. Worker URL සහ CORS පරීක්ෂා කරන්න.";
+    }
+
+    chatStatus.textContent = "සම්බන්ධ වීමට නොහැකි වුණා. පසුව උත්සාහ කරන්න.";
+
+  } finally {
+    sendButton.disabled = false;
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
 }
-sendButton.addEventListener("click",sendChat);
-chatInput.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendChat();}});
-$("clearChat").addEventListener("click",()=>{chatMessages.textContent="ආයුබෝවන්! 🇱🇰 SL BUZZ AI Manager වෙත සාදරයෙන් පිළිගනිමු.";chatStatus.textContent="";});
 
+$("sendChat").addEventListener("click", sendChat);
 
+chatInput.addEventListener("keydown", e => {
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault();
+    sendChat();
+  }
+});
+
+$("clearChat").addEventListener("click", () => {
+  chatMessages.textContent =
+    "ආයුබෝවන්! 🇱🇰 SL BUZZ AI Manager වෙත සාදරයෙන් පිළිගනිමු.";
+  chatStatus.textContent = "";
+});
+
+/* Start app */
 loadPageData();
 render();
 renderPosts();
+renderGrowthChart();
 </script>
 </body>
 </html>
